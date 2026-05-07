@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>英语素养大赛 - 成绩提交</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f0f2f5;
+            font-family: "宋体", "Microsoft YaHei", Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        input,
+        textarea,
+        select {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        .login-wrapper {
+            max-width: 560px;
+            margin: 40px auto;
+            background: white;
+            padding: 36px 30px;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        .login-subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 24px;
+        }
+        .form-item {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-item select,
+        .form-item input,
+        .form-item textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        .form-item select:focus,
+        .form-item input:focus,
+        .form-item textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        .form-item textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: 0.2s;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .tip {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-top-color: #007bff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .status-msg {
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 6px 0;
+        }
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .exam-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            display: none;
+        }
+        .question-paper {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            padding: 20px 24px 30px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            border-left: 6px solid #007bff;
+            padding-left: 18px;
+            background: #f9fafc;
+            border-radius: 40px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .audio-player {
+            text-align: center;
+            margin: 10px 0 25px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 50px;
+        }
+        audio {
+            width: 300px;
+            max-width: 90%;
+            border-radius: 30px;
+        }
+        .speed-btns {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .speed-btn {
+            padding: 6px 14px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .speed-btn.active {
+            background: #007bff;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            border-radius: 40px;
+            padding: 8px 24px;
+            background: #007bff;
+            color: white;
+            transition: 0.2s;
+            margin-top: 12px;
+        }
+        button:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .opt-item {
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            margin: 5px 8px;
+            cursor: pointer;
+            background: white;
+            transition: 0.15s;
+        }
+        .selected {
+            background: #cce5ff !important;
+            border-color: #007bff !important;
+        }
+        .correct {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+        }
+        .wrong {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+        }
+        .answer-box {
+            display: inline-block;
+            width: 110px;
+            height: 32px;
+            border: 2px solid #666;
+            background: #d4edda;
+            text-align: center;
+            line-height: 32px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-size: 13px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .dropzone {
+            transition: 0.1s;
+        }
+        .input-num {
+            width: 60px;
+            height: 38px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #007bff;
+            border-radius: 30px;
+            margin-top: 8px;
+        }
+        .number-drag {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            text-align: center;
+            background: #ffd966;
+            border-radius: 50%;
+            margin: 5px 8px;
+            cursor: grab;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            user-select: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .number-drag:active {
+            cursor: grabbing;
+            opacity: 0.8;
+        }
+        .group-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0 12px;
+        }
+        .group-title {
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 2px solid #ffb347;
+            display: inline-block;
+        }
+        .number-pool {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .q1-style .img-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        .q1-style .img-card {
+            text-align: center;
+            background: #fef9e6;
+            padding: 8px;
+            border-radius: 20px;
+        }
+        .q1-style .question-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+        .eighth .plan-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .eighth .plan-card {
+            border: 2px solid #333;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            min-width: 220px;
+            background: #fff;
+        }
+        .eighth .plan-title {
+            background: #ffeaa7;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .eighth .floor-plan {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            border: 2px solid #333;
+            margin: 0 auto;
+            width: 200px;
+        }
+        .eighth .room {
+            background: #e8f4fc;
+            border: 1px solid #333;
+            padding: 8px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .eighth .living-room {
+            background: #c8e6c9;
+        }
+        .eighth .kitchen {
+            background: #fff3cd;
+        }
+        .eighth .bathroom {
+            background: #ffd6d6;
+        }
+        .eighth .study {
+            background: #e1bee7;
+        }
+        .tenth .drop-box {
+            width: 200px;
+            height: 32px;
+            border: 1px dashed #666;
+            background: #f9f9f9;
+            display: inline-block;
+            margin: 0 5px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 13px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+        }
+        .tenth .filled {
+            background: #e6f9e6;
+            border-style: solid;
+            border-color: #008000;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px auto;
+            flex-wrap: wrap;
+        }
+        #finalSubmitBtn {
+            background: #28a745;
+            font-size: 20px;
+            padding: 16px 40px;
+            border-radius: 16px;
+        }
+        #resetBtn {
+            background: #ff7f50;
+            font-size: 20px;
+            padding: 16px 40px;
+            border-radius: 16px;
+        }
+        .wordItem,
+        .drag-option,
+        .plan-title {
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .dropzone,
+        .drop-box {
+            touch-action: none;
+        }
+        .student-info-bar {
+            background: #e8f4fd;
+            border-radius: 16px;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .student-info-bar strong {
+            color: #007bff;
+        }
+        .score-summary {
+            text-align: center;
+            font-size: 16px;
+            padding: 12px;
+            background: #f0fff4;
+            border-radius: 16px;
+            margin: 16px 0;
+        }
+        .score-summary span {
+            font-weight: bold;
+            font-size: 20px;
+            color: #28a745;
+        }
+        .retry-btn {
+            background: #ffc107;
+            color: #333;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .input-abc {
+            width: 60px;
+            height: 36px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            margin-left: 8px;
+        }
+        .input-word {
+            width: 140px;
+            height: 40px;
+            padding: 0 10px;
+            border: 2px dashed #2e7d32;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .input-word.bad {
+            border-color: #c62828;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper" id="loginPage">
+        <div class="login-title">🏆 英语素养大赛</div>
+        <div class="login-subtitle">提交试卷后数据将发送到服务器</div>
+        <div class="form-item">
+            <label>📋 请选择班级</label>
+            <select id="classNameSelect">
+                <option value="">-- 正在加载班级列表... --</option>
+            </select>
+            <div id="classLoadStatus" style="font-size:12px;color:#888;margin-top:4px;"></div>
+        </div>
+        <div class="form-item">
+            <label>👤 请输入学生姓名</label>
+            <input type="text" id="studentNameInput" placeholder="请输入你的姓名">
+        </div>
+        <button class="submit-btn" id="enterExamBtn" onclick="goExam()" disabled>进入考试</button>
+        <div class="tip">温馨提示：每人只能参加一次，请勿重复测试</div>
+        <div id="loginError" style="color:#dc3545;font-size:13px;margin-top:8px;display:none;"></div>
+    </div>
+
+    <div class="exam-wrapper" id="examPage">
+        <div class="student-info-bar">
+            📝 考生：<strong id="displayStudentName">--</strong> &nbsp;|&nbsp; 🏫 班级：<strong id="displayClassName">--</strong>
+        </div>
+
+        <div class="section-title">🎧 听力部分 Listening Part</div>
+        <div class="audio-player">
+            <audio id="listeningAudio" controls src="http://smallbear.test.upcdn.net/listening.mp3"></audio>
+            <div style="font-size:12px;color:#666;margin-top:5px;">点击播放按钮收听听力录音</div>
+            <div class="speed-btns">
+                <button class="speed-btn" onclick="setPlaybackRate(0.75)">🐌 慢速</button>
+                <button class="speed-btn active" onclick="setPlaybackRate(1)">⚡ 正常</button>
+                <button class="speed-btn" onclick="setPlaybackRate(1.25)">🚀 快速</button>
+            </div>
+        </div>
+
+        <div class="question-paper">
+            <div class="q1-style">
+                <div class="page-title">一、听录音，给下列图片标序号（直接在方框输入数字 1-5）</div>
+                <div class="group-header">
+                    <span class="group-title">第一组</span>
+                </div>
+                <div class="img-flex">
+                    <div class="img-card"><img class="question-img" src="assets/p1.png"><br><input type="text" class="input-num" data-q="1-1" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p2.png"><br><input type="text" class="input-num" data-q="1-2" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p3.png"><br><input type="text" class="input-num" data-q="1-3" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p4.png"><br><input type="text" class="input-num" data-q="1-4" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p5.png"><br><input type="text" class="input-num" data-q="1-5" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                </div>
+                <div class="group-header">
+                    <span class="group-title">第二组</span>
+                </div>
+                <div class="img-flex">
+                    <div class="img-card"><img class="question-img" src="assets/p6.png"><br><input type="text" class="input-num" data-q="2-1" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p7.png"><br><input type="text" class="input-num" data-q="2-2" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p8.png"><br><input type="text" class="input-num" data-q="2-3" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p9.png"><br><input type="text" class="input-num" data-q="2-4" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                    <div class="img-card"><img class="question-img" src="assets/p10.png"><br><input type="text" class="input-num" data-q="2-5" maxlength="1" oninput="this.value=this.value.replace(/[^1-5]/g,'')"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">二、听录音，选出正确的答语</div>
+            <div id="q2list"></div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">三、听录音，选择你所听到的单词</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;" id="q3grid"></div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">四、听音判断，相符√，不符×</div>
+            <div id="q4grid" style="display:flex;flex-wrap:wrap;gap:18px;"></div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">五、听录音，圈出相符图片</div>
+            <div id="q5area" style="display:flex;flex-wrap:wrap;gap:20px;"></div>
+        </div>
+
+        <div class="section-title">📖 读写部分 Reading & Writing</div>
+
+        <div class="question-paper">
+            <div class="page-title">六、读一读，选出最佳答案</div>
+            <div id="q6list"></div>
+            <div>
+                <strong>6. How many small apples do we need（需要）?</strong>
+                <div id="balanceArea" style="display:flex;gap:30px;justify-content:center;margin:20px 0;flex-wrap:wrap;"></div>
+                <div><span class="opt-item" data-q="6-7" data-ans="A">A. Four</span><span class="opt-item" data-q="6-7" data-ans="B">B. Six</span><span class="opt-item" data-q="6-7" data-ans="C">C. Two</span></div>
+            </div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">七、选出正确答语</div>
+            <div id="q7area"></div>
+        </div>
+
+        <div class="question-paper">
+            <div class="eighth">
+                <div class="page-title">八、阅读选择，直接输入正确方案 A/B/C</div>
+                <div>
+                    <p>顾客1: I have two kids, a boy and a girl. I want three bedrooms, two bathrooms, a study, a kitchen and a big living room. <input type="text" class="input-abc" id="ans1_8" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABC]/g,'')"></p>
+                    <p>顾客2: I want two bedrooms and a kitchen. I have many friends. I want a big living room and two bathrooms. <input type="text" class="input-abc" id="ans2_8" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABC]/g,'')"></p>
+                    <p>顾客3: I want a bedroom, a living room, a bathroom and a kitchen. I like to read books. I want a study. <input type="text" class="input-abc" id="ans3_8" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABC]/g,'')"></p>
+                </div>
+                <div class="plan-container">
+                    <div class="plan-card"><div class="plan-title">方案A</div><div id="contentA_8"></div></div>
+                    <div class="plan-card"><div class="plan-title">方案B</div><div id="contentB_8"></div></div>
+                    <div class="plan-card"><div class="plan-title">方案C</div><div id="contentC_8"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-paper">
+            <div class="page-title">九、故事排序 + 健康饮食建议</div>
+            <div><strong>(一) 按故事发展排序（第2图已标序号1）</strong></div>
+            <div id="comicGrid" style="display:flex;gap:15px;flex-wrap:wrap;margin:15px 0;"></div>
+            <div><strong>(二) 直接输入你认为合适的单词到方框（英语单词）</strong></div>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div style="background:#e8f5e9;padding:12px;border-radius:24px;">
+                    <div>✅ The boy should eat (应该吃)</div>
+                    <input type="text" class="input-word" id="dropShould1" placeholder="输入单词">
+                    <input type="text" class="input-word" id="dropShould2" placeholder="输入单词">
+                </div>
+                <div style="background:#ffebee;padding:12px;border-radius:24px;">
+                    <div>❌ The boy shouldn't eat (不应该吃)</div>
+                    <input type="text" class="input-word bad" id="dropShouldnt1" placeholder="输入单词">
+                    <input type="text" class="input-word bad" id="dropShouldnt2" placeholder="输入单词">
+                </div>
+                <div>
+                    <div>📦 单词参考：vegetable蔬菜 / fish鱼 / beef牛肉 / ice-cream冰激凌 / too much太多</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-paper">
+            <div class="tenth">
+                <div class="page-title">十、直接输入 A B C D E 补全对话</div>
+                <div style="margin-bottom:15px;text-align:center;">
+                    A. I'm hungry.　B. What do you want?　C. Vegetables and rice.　D. I want some fish and chicken.　E. What do you want to drink?
+                </div>
+                <div>
+                    <div>Mary: <input type="text" class="input-abc" id="drop10_1" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABCDE]/g,'')"> What's for dinner, Mum?</div>
+                    <div>Mum: <input type="text" class="input-abc" id="drop10_2" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABCDE]/g,'')"></div>
+                    <div>Mary: I don't like vegetables.</div>
+                    <div>Mum: <input type="text" class="input-abc" id="drop10_3" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABCDE]/g,'')"></div>
+                    <div>Mary: <input type="text" class="input-abc" id="drop10_4" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABCDE]/g,'')"></div>
+                    <div>Mum: OK. Let's have some fish.</div>
+                    <div>Mum: <input type="text" class="input-abc" id="drop10_5" maxlength="1" oninput="this.value=this.value.toUpperCase().replace(/[^ABCDE]/g,'')"></div>
+                    <div>Mary: I want some apple juice.</div>
+                    <div>Mum: OK.</div>
+                    <div>Mary: Thank you.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-paper" id="scoreSummaryPaper" style="display:none;">
+            <div class="page-title">📊 成绩摘要与学习反馈</div>
+            <div class="score-summary" id="scoreSummaryText">
+                总正确：<span id="sumCorrect">0</span> 题 &nbsp;|&nbsp; 总错误：<span id="sumWrong">0</span> 题 &nbsp;|&nbsp;
+                总分：<span id="sumScore">0</span> / <span id="sumTotal">0</span> 分
+            </div>
+            <div class="form-item">
+                <label>🔍 薄弱点描述（可修改）</label>
+                <textarea id="weaknessInput" placeholder="系统将根据答题情况自动生成薄弱点分析..."></textarea>
+            </div>
+            <div class="form-item">
+                <label>💡 学习建议（可修改）</label>
+                <textarea id="suggestionInput" placeholder="系统将根据答题情况自动生成学习建议..."></textarea>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button id="finalSubmitBtn" onclick="submitFinalScore()">📤 提交试卷</button>
+            <button id="resetBtn" onclick="resetExam()">🔄 重做</button>
+        </div>
+        <div id="submitStatus" style="text-align:center;margin-top:10px;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://www.edunav.cn/api/data-tasks/task_8187ce1f9a26';
+        const AUTH_HEADER = 'Bearer dtk_388d967cc307_bc766e82c541f0f3770616ca70b47a6c';
+        let currentClass = "";
+        let currentName = "";
+        let classListData = [];
+        let hasSubmitted = false;
+
+        async function apiGet(url) {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_HEADER }
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + (result.message || '请求失败'));
+            return result;
+        }
+
+        async function apiPost(url, data) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_HEADER },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error('HTTP ' + response.status + ': ' + (result.message || '请求失败'));
+            return result;
+        }
+
+        async function loadClasses() {
+            const selectEl = document.getElementById('classNameSelect');
+            const statusEl = document.getElementById('classLoadStatus');
+            const enterBtn = document.getElementById('enterExamBtn');
+            statusEl.innerHTML = '<span class="loading-spinner"></span>正在加载班级列表...';
+            statusEl.className = 'status-msg status-loading';
+            try {
+                const result = await apiGet(API_BASE + '/classes');
+                if (result.code === 0 && result.data && Array.isArray(result.data) && result.data.length > 0) {
+                    classListData = result.data;
+                    selectEl.innerHTML = '<option value="">-- 请选择班级 --</option>';
+                    classListData.forEach(cls => {
+                        const opt = document.createElement('option');
+                        opt.value = cls.id || cls.name || cls;
+                        opt.textContent = cls.name || cls;
+                        selectEl.appendChild(opt);
+                    });
+                    statusEl.innerHTML = '✅ 班级列表加载成功';
+                    statusEl.className = 'status-msg status-success';
+                    enterBtn.disabled = false;
+                } else {
+                    throw new Error('班级数据为空');
+                }
+            } catch (err) {
+                console.error('加载班级列表失败:', err);
+                statusEl.innerHTML = '⚠️ 加载失败，使用默认班级列表';
+                statusEl.className = 'status-msg status-error';
+                const fallbackClasses = ['3年级10班', '3年级11班', '3年级12班'];
+                classListData = fallbackClasses.map(c => ({ id: c, name: c }));
+                selectEl.innerHTML = '<option value="">-- 请选择班级 --</option>';
+                fallbackClasses.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    selectEl.appendChild(opt);
+                });
+                enterBtn.disabled = false;
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginError').textContent = '班级列表加载失败，已启用默认列表。错误：' + err.message;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadClasses();
+            initAll();
+        });
+
+        function setPlaybackRate(rate) {
+            const audio = document.getElementById('listeningAudio');
+            audio.playbackRate = rate;
+            document.querySelectorAll('.speed-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+        }
+
+        function goExam() {
+            const classSelect = document.getElementById('classNameSelect');
+            const studentNameInput = document.getElementById('studentNameInput');
+            const loginError = document.getElementById('loginError');
+            let className = classSelect.value;
+            let studentName = studentNameInput.value.trim();
+            if (!className) { alert("请选择班级！"); return; }
+            if (!studentName) { alert("请输入学生姓名！"); return; }
+            const classObj = classListData.find(c => (c.id || c.name || c) === className);
+            currentClass = classObj ? (classObj.name || classObj) : className;
+            currentName = studentName;
+            document.getElementById('displayStudentName').textContent = currentName;
+            document.getElementById('displayClassName').textContent = currentClass;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('examPage').style.display = 'flex';
+            document.getElementById('scoreSummaryPaper').style.display = 'none';
+            document.getElementById('submitStatus').innerHTML = '';
+            hasSubmitted = false;
+            document.getElementById('finalSubmitBtn').disabled = false;
+            document.getElementById('finalSubmitBtn').innerText = '📤 提交试卷';
+            document.getElementById('finalSubmitBtn').style.background = '#28a745';
+            loginError.style.display = 'none';
+        }
+
+        function resetExam() {
+            if (!confirm("确定要清空所有答案，重新做题吗？")) return;
+            document.querySelectorAll(".opt-item").forEach(o => o.classList.remove("selected"));
+            document.querySelectorAll(".img-opt").forEach(i => { i.style.border = "2px solid transparent"; i.classList.remove("selected"); });
+            document.querySelectorAll(".input-num, .input-abc, .input-word").forEach(inp => inp.value = "");
+            document.querySelectorAll('[id^="order"]').forEach(o => { if (o.id !== "order2") o.value = ""; });
+            document.getElementById('scoreSummaryPaper').style.display = 'none';
+            document.getElementById('submitStatus').innerHTML = '';
+            hasSubmitted = false;
+            let btn = document.getElementById("finalSubmitBtn");
+            btn.disabled = false;
+            btn.innerText = "📤 提交试卷";
+            btn.style.background = "#28a745";
+            document.getElementById('weaknessInput').value = '';
+            document.getElementById('suggestionInput').value = '';
+            alert("已清空答案，可以重新做题啦！");
+        }
+
+        function initQ5() {
+            const imgs = [
+                ["assets/p21A.png", "assets/p21B.png"],
+                ["assets/p22A.png", "assets/p22B.png"],
+                ["assets/p23A.png", "assets/p23B.png"],
+                ["assets/p24A.png", "assets/p24B.png"]
+            ];
+            let c = document.getElementById('q5area');
+            for (let i = 1; i <= 4; i++) {
+                let d = document.createElement('div');
+                d.style.border = '1px solid #ccc';
+                d.style.borderRadius = '20px';
+                d.style.padding = '8px';
+                d.innerHTML = `<div><strong>${i}.</strong></div>
+                <div style="display:flex;gap:12px;">
+                    <div class="img-opt" data-q="5-${i}" data-ans="A" style="cursor:pointer;border:2px solid transparent;padding:4px;">
+                        <img src="${imgs[i-1][0]}" width="90"><div>A</div>
+                    </div>
+                    <div class="img-opt" data-q="5-${i}" data-ans="B" style="cursor:pointer;border:2px solid transparent;padding:4px;">
+                        <img src="${imgs[i-1][1]}" width="90"><div>B</div>
+                    </div>
+                </div>`;
+                c.appendChild(d);
+            }
+            c.querySelectorAll('.img-opt').forEach(el => {
+                el.onclick = () => {
+                    let q = el.dataset.q;
+                    c.querySelectorAll(`[data-q="${q}"]`).forEach(x => { x.style.border = '2px solid transparent'; x.classList.remove('selected'); });
+                    el.style.border = '3px solid #007bff';
+                    el.classList.add('selected');
+                };
+            });
+        }
+
+        function initQ2() {
+            const opts = [
+                ["A. Yes, he is.", "B. No, she isn't."],
+                ["A. He's behind the door.", "B. It's in the kitchen."],
+                ["A. They're my trousers.", "B. It's Guo Yang's."],
+                ["A. No, I don't.", "B. Yes, I don't."],
+                ["A. I like rice.", "B. Fish, rice and some chicken."]
+            ];
+            let c = document.getElementById('q2list');
+            for (let i = 1; i <= 5; i++) {
+                let d = document.createElement('div');
+                d.style.marginBottom = '14px';
+                d.innerHTML = `<b>${i}.</b> `;
+                opts[i - 1].forEach(o => {
+                    let s = document.createElement('span');
+                    s.className = 'opt-item';
+                    s.dataset.q = `2-${i}`;
+                    s.dataset.ans = o.charAt(0);
+                    s.innerText = o;
+                    s.onclick = () => { c.querySelectorAll(`[data-q="2-${i}"]`).forEach(x => x.classList.remove("selected")); s.classList.add("selected"); };
+                    d.appendChild(s);
+                });
+                c.appendChild(d);
+            }
+        }
+
+        function initQ3() {
+            const data = ["dinner", "lunch", "how", "what", "what", "whose", "sixteen", "thirteen", "those", "these", "thirteen", "twelve", "kitchen", "library", "behind", "under", "water", "watch", "home", "come"];
+            let c = document.getElementById('q3grid');
+            for (let i = 1; i <= 10; i++) {
+                let d = document.createElement('div');
+                d.innerHTML = `<b>${i}.</b> <span class="opt-item" data-q="3-${i}" data-ans="A">A. ${data[(i-1)*2]}</span> <span class="opt-item" data-q="3-${i}" data-ans="B">B. ${data[(i-1)*2+1]}</span>`;
+                c.appendChild(d);
+            }
+            c.querySelectorAll('.opt-item').forEach(el => {
+                el.onclick = () => { let q = el.dataset.q; c.querySelectorAll(`[data-q="${q}"]`).forEach(x => x.classList.remove("selected")); el.classList.add("selected"); };
+            });
+        }
+
+        function initQ4() {
+            const imgs = ["assets/p11.png", "assets/p12.png", "assets/p13.png", "assets/p14.png", "assets/p15.png"];
+            let g = document.getElementById('q4grid');
+            for (let i = 1; i <= 5; i++) {
+                let card = document.createElement('div');
+                card.style.border = '1px solid #ddd';
+                card.style.borderRadius = '20px';
+                card.style.padding = '10px';
+                card.style.textAlign = 'center';
+                card.style.width = '140px';
+                card.innerHTML = `<div>${i}.</div><img src="${imgs[i-1]}" width="100"><div><span class="opt-item" data-q="4-${i}" data-ans="√">√</span><span class="opt-item" data-q="4-${i}" data-ans="×">×</span></div>`;
+                g.appendChild(card);
+            }
+            g.querySelectorAll('.opt-item').forEach(el => {
+                el.onclick = () => { let q = el.dataset.q; g.querySelectorAll(`[data-q="${q}"]`).forEach(x => x.classList.remove("selected")); el.classList.add("selected"); };
+            });
+        }
+
+        function initQ6() {
+            const texts = ["1. ______ have a big living room.", "2. ______ sweater is that ?", "3. - What do you want ? - I want some ______.", "4. - How many monkeys can you see ? ______.", "5. - Is this your skirt ? - ______ It's my sister's.", "6. It's a drink. It's brown. It's ______."];
+            const opts = [
+                ["A. My", "B. Our", "C. We"],
+                ["A. What", "B. Who's", "C. Whose"],
+                ["A. breads", "B. orange juice", "C. tomato"],
+                ["A. Eleven.", "B. Yes, I can.", "C. They're funny."],
+                ["A. Yes, this is.", "B. No, this isn't.", "C. No, it isn't."],
+                ["A. coffee", "B. milk", "C. water"]
+            ];
+            let c = document.getElementById('q6list');
+            for (let i = 0; i < texts.length; i++) {
+                let d = document.createElement('div');
+                d.style.marginBottom = '16px';
+                d.innerHTML = `<div>${texts[i]}</div>`;
+                let od = document.createElement('div');
+                opts[i].forEach(o => {
+                    let s = document.createElement('span');
+                    s.className = 'opt-item';
+                    s.dataset.q = `6-${i+1}`;
+                    s.dataset.ans = o.charAt(0);
+                    s.innerText = o;
+                    s.onclick = () => { c.querySelectorAll(`[data-q="6-${i+1}"]`).forEach(x => x.classList.remove("selected")); s.classList.add("selected"); };
+                    od.appendChild(s);
+                });
+                d.appendChild(od);
+                c.appendChild(d);
+            }
+            let bal = document.getElementById('balanceArea');
+            bal.innerHTML = `<div style="position:relative;width:190px;height:130px;background:#fff7e8;border-radius:32px;padding:5px;"><div style="position:absolute;bottom:8px;left:50%;width:36px;height:8px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;bottom:16px;left:50%;width:5px;height:70px;background:#5a3e1b;"></div><div style="position:absolute;top:34px;left:50%;width:150px;height:3px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;top:44px;left:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;gap:3px;"><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div></div><div style="position:absolute;top:44px;right:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;gap:2px;justify-content:center;"><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div></div></div><div style="position:relative;width:190px;height:130px;background:#fff7e8;border-radius:32px;"><div style="position:absolute;bottom:8px;left:50%;width:36px;height:8px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;bottom:16px;left:50%;width:5px;height:70px;background:#5a3e1b;"></div><div style="position:absolute;top:34px;left:50%;width:150px;height:3px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;top:44px;left:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;align-items:center;"><span style="font-size:28px;">?</span></div><div style="position:absolute;top:44px;right:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;"><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div></div></div>`;
+            document.querySelectorAll('[data-q="6-7"]').forEach(el => {
+                el.onclick = () => { document.querySelectorAll('[data-q="6-7"]').forEach(x => x.classList.remove("selected")); el.classList.add("selected"); };
+            });
+        }
+
+        function initQ7() {
+            const q = ["It's a drink. It's white. It's", "Where's Li Ming's mother?", "What are these?", "How many books do you have?", "Whose shirt is that?"];
+            const o = [
+                ["A. apple juice", "B. milk"],
+                ["A. She's in the kitchen.", "B. He's in the living room."],
+                ["A. A monkey.", "B. They're monkeys."],
+                ["A. Eighteen.", "B. I'm eight."],
+                ["A. It's Danny.", "B. It's Danny's."]
+            ];
+            let c = document.getElementById('q7area');
+            for (let i = 1; i <= 5; i++) {
+                let d = document.createElement('div');
+                d.style.marginBottom = '14px';
+                d.innerHTML = `<b>${i}.</b> ${q[i-1]}<br>`;
+                o[i - 1].forEach(opt => {
+                    let s = document.createElement('span');
+                    s.className = 'opt-item';
+                    s.dataset.q = `7-${i}`;
+                    s.dataset.ans = opt.charAt(0);
+                    s.innerText = opt;
+                    s.onclick = () => { c.querySelectorAll(`[data-q="7-${i}"]`).forEach(x => x.classList.remove("selected")); s.classList.add("selected"); };
+                    d.appendChild(s);
+                });
+                c.appendChild(d);
+            }
+        }
+
+        function initQ8() {
+            const t = {
+                A: `<div class="floor-plan" style="grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto auto;"><div class="room">Bedroom 1</div><div class="room">Bedroom 2</div><div class="room">Bedroom 3</div><div class="room study">Study</div><div class="room bathroom">Bathroom 1</div><div class="room living-room">Big Living Room</div><div class="room kitchen">Kitchen</div><div class="room bathroom">Bathroom 2</div></div>`,
+                B: `<div class="floor-plan" style="grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;"><div class="room">Bedroom 1</div><div class="room">Bedroom 2</div><div class="room bathroom">Bathroom 1</div><div class="room bathroom">Bathroom 2</div><div class="room living-room">Big Living Room</div><div class="room kitchen">Kitchen</div></div>`,
+                C: `<div class="floor-plan" style="grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;"><div class="room">Bedroom</div><div class="room bathroom">Bathroom</div><div class="room living-room">Living Room</div><div class="room kitchen">Kitchen</div><div class="room study">Study</div></div>`
+            };
+            document.getElementById('contentA_8').innerHTML = t.A;
+            document.getElementById('contentB_8').innerHTML = t.B;
+            document.getElementById('contentC_8').innerHTML = t.C;
+        }
+
+        function initQ9() {
+            const cs = ['comic1.png', 'comic2.png', 'comic3.png', 'comic4.png'];
+            let g = document.getElementById('comicGrid');
+            for (let i = 1; i <= 4; i++) {
+                let card = document.createElement('div');
+                card.style.textAlign = 'center';
+                card.style.border = '1px solid #ccc';
+                card.style.borderRadius = '20px';
+                card.style.padding = '8px';
+                card.innerHTML = `<img src="assets/${cs[i-1]}" width="100"><div><input type="text" id="order${i}" maxlength="1" style="width:55px;text-align:center;" ${i===2?'value="1" readonly':''} placeholder="序号"></div>`;
+                g.appendChild(card);
+            }
+            ['order1', 'order3', 'order4'].forEach(id => { 
+                let inp = document.getElementById(id); 
+                if (inp) inp.addEventListener('input', () => inp.value = inp.value.replace(/[^1-4]/g, '')); 
+            });
+        }
+
+        function initAll() { 
+            initQ2(); initQ3(); initQ4(); initQ5(); initQ6(); initQ7(); initQ8(); initQ9(); 
+        }
+
+        // 适配输入后的判分逻辑
+        function checkQ1() { 
+            const ans = { "1-1": "3", "1-2": "4", "1-3": "5", "1-4": "1", "1-5": "2", "2-1": "4", "2-2": "1", "2-3": "5", "2-4": "3", "2-5": "2" }; 
+            let c = 0; 
+            for (let q in ans) { 
+                let box = document.querySelector(`.input-num[data-q="${q}"]`); 
+                if (box && box.value.trim() === ans[q]) c++; 
+            } 
+            return { correct: c, total: 10 }; 
+        }
+        function checkQ2() { const ans = { "2-1": "B", "2-2": "B", "2-3": "A", "2-4": "A", "2-5": "B" }; let c = 0; for (let q in ans) { let s = document.querySelector(`#q2list .opt-item[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 5 }; }
+        function checkQ3() { const ans = { "3-1": "A", "3-2": "A", "3-3": "B", "3-4": "A", "3-5": "B", "3-6": "A", "3-7": "A", "3-8": "B", "3-9": "B", "3-10": "A" }; let c = 0; for (let q in ans) { let s = document.querySelector(`#q3grid .opt-item[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 10 }; }
+        function checkQ4() { const ans = { "4-1": "√", "4-2": "×", "4-3": "×", "4-4": "×", "4-5": "√" }; let c = 0; for (let q in ans) { let s = document.querySelector(`#q4grid .opt-item[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 5 }; }
+        function checkQ5() { const ans = { "5-1": "A", "5-2": "B", "5-3": "B", "5-4": "A" }; let c = 0; for (let q in ans) { let s = document.querySelector(`#q5area .img-opt[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 4 }; }
+        function checkQ6() { const ans = { "6-1": "C", "6-2": "C", "6-3": "B", "6-4": "A", "6-5": "C", "6-6": "A", "6-7": "C" }; let c = 0; for (let q in ans) { let s = document.querySelector(`.opt-item[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 7 }; }
+        function checkQ7() { const ans = { "7-1": "B", "7-2": "A", "7-3": "B", "7-4": "A", "7-5": "B" }; let c = 0; for (let q in ans) { let s = document.querySelector(`#q7area .opt-item[data-q="${q}"].selected`); if (s && s.dataset.ans === ans[q]) c++; } return { correct: c, total: 5 }; }
+        function checkQ8() { 
+            const map = { ans1_8: "A", ans2_8: "B", ans3_8: "C" }; 
+            let c = 0; 
+            if (document.getElementById('ans1_8').value.trim().toUpperCase() === map.ans1_8) c++; 
+            if (document.getElementById('ans2_8').value.trim().toUpperCase() === map.ans2_8) c++; 
+            if (document.getElementById('ans3_8').value.trim().toUpperCase() === map.ans3_8) c++; 
+            return { correct: c, total: 3 }; 
+        }
+        function checkQ9() {
+            let sort = 0; if (document.getElementById('order1')?.value === '4') sort++; if (document.getElementById('order3')?.value === '2') sort++; if (document.getElementById('order4')?.value === '3') sort++;
+            let ok1 = 0; 
+            let a = document.getElementById('dropShould1').value.toLowerCase().trim();
+            let b = document.getElementById('dropShould2').value.toLowerCase().trim();
+            if (a && (a.includes('vegetable') || a.includes('fish'))) ok1++; 
+            if (b && (b.includes('vegetable') || b.includes('fish'))) ok1++;
+            
+            let badWords = ['beef', 'ice-cream', 'too much'];
+            let ok2 = 0;
+            let c = document.getElementById('dropShouldnt1').value.toLowerCase().trim();
+            let d = document.getElementById('dropShouldnt2').value.toLowerCase().trim();
+            if (c && badWords.some(x => c.includes(x))) ok2++;
+            if (d && badWords.some(x => d.includes(x))) ok2++;
+            
+            return { correct: sort + ok1 + ok2, total: 7 };
+        }
+        function checkQ10() { 
+            const ans = { 'drop10_1': 'A', 'drop10_2': 'C', 'drop10_3': 'B', 'drop10_4': 'D', 'drop10_5': 'E' }; 
+            let c = 0; 
+            for (let id in ans) { 
+                if (document.getElementById(id).value.trim().toUpperCase() === ans[id]) c++; 
+            } 
+            return { correct: c, total: 5 }; 
+        }
+
+        function getAllQuestionResults() {
+            return [
+                { key: 'question1', label: '听力排序', ...checkQ1() },
+                { key: 'question2', label: '听录音选答语', ...checkQ2() },
+                { key: 'question3', label: '听录音选单词', ...checkQ3() },
+                { key: 'question4', label: '听音判断', ...checkQ4() },
+                { key: 'question5', label: '听录音圈图片', ...checkQ5() },
+                { key: 'question6', label: '读一读选答案', ...checkQ6() },
+                { key: 'question7', label: '选出正确答语', ...checkQ7() },
+                { key: 'question8', label: '阅读选择户型', ...checkQ8() },
+                { key: 'question9', label: '故事排序+饮食', ...checkQ9() },
+                { key: 'question10', label: '补全对话', ...checkQ10() },
+            ];
+        }
+
+        function generateWeaknessAndSuggestion(results) {
+            const listeningResults = results.slice(0, 5);
+            const readingResults = results.slice(5);
+            const listeningRate = listeningResults.reduce((sum, r) => sum + r.correct, 0) / listeningResults.reduce((sum, r) => sum + r.total, 0);
+            const readingRate = readingResults.reduce((sum, r) => sum + r.correct, 0) / readingResults.reduce((sum, r) => sum + r.total, 0);
+            let weaknessParts = [];
+            let suggestionParts = [];
+            if (listeningRate < 0.6) { weaknessParts.push('听力部分需加强'); suggestionParts.push('多练习听力排序和听单词题型，每天坚持听英语录音15分钟。'); } else if (listeningRate < 0.8) { weaknessParts.push('听力部分有提升空间'); suggestionParts.push('听力表现良好，继续加强听音判断和圈图片题型。'); }
+            if (readingRate < 0.6) { weaknessParts.push('读写部分需加强'); suggestionParts.push('多读英语短文，加强阅读理解和句型选择练习。'); } else if (readingRate < 0.8) { weaknessParts.push('读写部分有提升空间'); suggestionParts.push('读写表现良好，注意细节和对话补全题型。'); }
+            results.forEach(r => { if (r.total > 0 && r.correct / r.total < 0.5 && !weaknessParts.includes(r.label)) { weaknessParts.push(r.label + '得分较低'); } });
+            if (weaknessParts.length === 0) weaknessParts.push('整体表现优秀，无明显薄弱点');
+            if (suggestionParts.length === 0) suggestionParts.push('基础扎实，继续保持并挑战更高难度题目！');
+            return { weakness: weaknessParts.join('；'), suggestion: suggestionParts.join(' ') };
+        }
+
+        async function submitFinalScore() {
+            if (!currentClass || !currentName) { alert("请先完成登录！"); return; }
+            if (hasSubmitted) { alert("您已提交过试卷，请勿重复提交！"); return; }
+            if (!confirm("确定提交试卷吗？提交后无法修改！")) return;
+            const results = getAllQuestionResults();
+            const totalCorrect = results.reduce((sum, r) => sum + r.correct, 0);
+            const totalQuestions = results.reduce((sum, r) => sum + r.total, 0);
+            const totalIncorrect = totalQuestions - totalCorrect;
+            const finalScore = Math.round((totalCorrect / totalQuestions) * 100);
+            document.getElementById('sumCorrect').textContent = totalCorrect;
+            document.getElementById('sumWrong').textContent = totalIncorrect;
+            document.getElementById('sumScore').textContent = finalScore;
+            document.getElementById('sumTotal').textContent = totalQuestions;
+            document.getElementById('scoreSummaryPaper').style.display = 'block';
+            const autoGen = generateWeaknessAndSuggestion(results);
+            const weaknessInput = document.getElementById('weaknessInput');
+            const suggestionInput = document.getElementById('suggestionInput');
+            if (!weaknessInput.value) weaknessInput.value = autoGen.weakness;
+            if (!suggestionInput.value) suggestionInput.value = autoGen.suggestion;
+            const postData = {
+                "recordType": "score_record",
+                "schemaVersion": "1.0",
+                "action": "submit",
+                "summary": { "title": currentName + " - " + currentClass + " - 英语素养大赛成绩" },
+                "data": {
+                    "studentName": currentName,
+                    "class": currentClass,
+                    "totalCorrect": totalCorrect,
+                    "totalIncorrect": totalIncorrect,
+                    "finalScore": finalScore,
+                    "question1": { "correct": results[0].correct, "total": results[0].total },
+                    "question2": { "correct": results[1].correct, "total": results[1].total },
+                    "question3": { "correct": results[2].correct, "total": results[2].total },
+                    "question4": { "correct": results[3].correct, "total": results[3].total },
+                    "question5": { "correct": results[4].correct, "total": results[4].total },
+                    "question6": { "correct": results[5].correct, "total": results[5].total },
+                    "question7": { "correct": results[6].correct, "total": results[6].total },
+                    "question8": { "correct": results[7].correct, "total": results[7].total },
+                    "question9": { "correct": results[8].correct, "total": results[8].total },
+                    "question10": { "correct": results[9].correct, "total": results[9].total },
+                    "weakness": weaknessInput.value || autoGen.weakness,
+                    "suggestion": suggestionInput.value || autoGen.suggestion
+                },
+                "meta": { "source": "web" }
+            };
+            const statusEl = document.getElementById('submitStatus');
+            statusEl.innerHTML = '<div class="status-msg status-loading"><span class="loading-spinner"></span>正在提交成绩到服务器...</div>';
+            try {
+                const result = await apiPost(API_BASE + '/submit', postData);
+                if (result.code === 0) {
+                    statusEl.innerHTML = '<div class="status-msg status-success">✅ 成绩提交成功！您的成绩已上传至系统。</div>';
+                    hasSubmitted = true;
+                    let btn = document.getElementById("finalSubmitBtn");
+                    btn.disabled = true;
+                    btn.innerText = "✅ 已提交";
+                    btn.style.background = "#999";
+                } else {
+                    throw new Error(result.message || '服务器返回异常状态');
+                }
+            } catch (err) {
+                console.error('提交失败:', err);
+                statusEl.innerHTML = '<div class="status-msg status-error">❌ 提交失败：' + err.message + ' <button class="retry-btn" onclick="submitFinalScore()">🔄 重试提交</button></div>';
+            }
+        }
+    </script>
+</body>
+</html>
