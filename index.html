@@ -1,1 +1,696 @@
-你好。。。。。。这是我的站点，试一试，好不好用呢
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>英语素养大赛</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #f0f2f5;
+            font-family: "宋体", "Microsoft YaHei", Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 登录首页样式 */
+        .login-wrapper {
+            max-width: 500px;
+            margin: 80px auto;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .login-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        .form-item {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-item select,
+        .form-item input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+        .tip {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* 试卷样式 */
+        .exam-wrapper { display: flex; flex-direction: column; gap: 30px; display: none; }
+        .question-paper {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 20px 24px 30px;
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            border-left: 6px solid #007bff;
+            padding-left: 18px;
+            background: #f9fafc;
+            border-radius: 40px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .audio-player { text-align: center; margin: 10px 0 25px; padding: 10px; background: #f8f9fa; border-radius: 50px; }
+        audio { width: 300px; max-width: 90%; border-radius: 30px; }
+        button {
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            border-radius: 40px;
+            padding: 8px 24px;
+            background: #007bff;
+            color: white;
+            transition: 0.2s;
+            margin-top: 12px;
+        }
+        button:hover { opacity: 0.85; transform: translateY(-1px); }
+        .opt-item {
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            margin: 5px 8px;
+            cursor: pointer;
+            background: white;
+        }
+        .selected { background: #cce5ff !important; border-color: #007bff !important; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
+        .answer-box {
+            display: inline-block;
+            width: 90px;
+            height: 32px;
+            border: 2px solid #666;
+            background: #d4edda;
+            text-align: center;
+            line-height: 32px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .dropzone { transition: 0.1s; }
+
+        /* 第八题样式 */
+        .eighth .plan-container { display:flex; gap:15px; flex-wrap:wrap; margin:20px 0; justify-content:center; }
+        .eighth .plan-card { border:2px solid #333; padding:10px; border-radius:8px; text-align:center; flex:1; min-width:220px; background:#fff; }
+        .eighth .plan-title { background:#ffeaa7; padding:5px; border-radius:5px; cursor:grab; font-weight:bold; margin-bottom:10px; }
+        .eighth .floor-plan { display:grid; gap:2px; background:#333; border:2px solid #333; margin:0 auto; width:200px; }
+        .eighth .room { background:#e8f4fc; border:1px solid #333; padding:8px; font-size:12px; text-align:center; }
+        .eighth .living-room { background:#c8e6c9; }
+        .eighth .kitchen { background:#fff3cd; }
+        .eighth .bathroom { background:#ffd6d6; }
+        .eighth .study { background:#e1bee7; }
+
+        /* 第十题样式 */
+        .tenth .drop-box { width:190px; height:32px; border:1px dashed #666; background:#f9f9f9; display:inline-block; margin:0 5px; text-align:center; line-height:30px; }
+        .tenth .filled { background:#e6f9e6; border-style:solid; border-color:#008000; }
+
+        /* 按钮组样式 */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px auto;
+        }
+        /* 最终提交按钮 */
+        #finalSubmitBtn {
+            background: #28a745;
+            font-size: 20px;
+            padding: 16px 40px;
+            border-radius: 16px;
+        }
+        /* 重做按钮 */
+        #resetBtn {
+            background: #ff7f50;
+            font-size: 20px;
+            padding: 16px 40px;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 登录页面 -->
+<div class="login-wrapper" id="loginPage">
+    <div class="login-title">英语素养大赛</div>
+    <div class="form-item">
+        <label>请选择班级</label>
+        <select id="className">
+            <option value="">-- 请选择 --</option>
+            <option value="3年级10班">3年级10班</option>
+            <option value="3年级11班">3年级11班</option>
+            <option value="3年级12班">3年级12班</option>
+        </select>
+    </div>
+    <div class="form-item">
+        <label>请输入姓名</label>
+        <input type="text" id="studentName" placeholder="请输入你的姓名">
+    </div>
+    <button class="submit-btn" onclick="goExam()">进入考试</button>
+    <div class="tip">温馨提示：每人只能参加一次，请勿重复测试</div>
+</div>
+
+<!-- 考试页面 -->
+<div class="exam-wrapper" id="examPage">
+    <div class="section-title">🎧 听力部分 Listening Part</div>
+    <div class="audio-player">
+        <audio controls src="http://smallbear.test.upcdn.net/listening.mp3"></audio>
+        <div style="font-size:12px; color:#666; margin-top:5px;">点击播放按钮收听听力录音</div>
+    </div>
+
+    <!-- 第1题 -->
+    <div class="question-paper">
+        <style>
+            .q1-style .group-title { font-size:18px; font-weight:bold; margin:20px 0 12px; border-bottom:2px solid #ffb347; display:inline-block; }
+            .q1-style .img-flex { display:flex; flex-wrap:wrap; gap:20px; margin-bottom:20px; }
+            .q1-style .img-card { text-align:center; background:#fef9e6; padding:8px; border-radius:20px; }
+            .q1-style .question-img { width:100px; height:100px; object-fit:contain; background:white; border-radius:16px; border:1px solid #ddd; padding:6px; }
+            .q1-style .input-box { width:60px; height:38px; text-align:center; font-size:18px; margin-top:8px; border-radius:30px; border:1px solid #aaa; }
+        </style>
+        <div class="q1-style">
+            <div class="page-title">一、听录音，给下列图片标序号</div>
+            <div class="group-title">第一组</div>
+            <div class="img-flex">
+                <div class="img-card"><img class="question-img" src="pic/p1.png"><br><input type="text" class="input-box" data-q="1-1"></div>
+                <div class="img-card"><img class="question-img" src="pic/p2.png"><br><input type="text" class="input-box" data-q="1-2"></div>
+                <div class="img-card"><img class="question-img" src="pic/p3.png"><br><input type="text" class="input-box" data-q="1-3"></div>
+                <div class="img-card"><img class="question-img" src="pic/p4.png"><br><input type="text" class="input-box" data-q="1-4"></div>
+                <div class="img-card"><img class="question-img" src="pic/p5.png"><br><input type="text" class="input-box" data-q="1-5"></div>
+            </div>
+            <div class="group-title">第二组</div>
+            <div class="img-flex">
+                <div class="img-card"><img class="question-img" src="pic/p6.png"><br><input type="text" class="input-box" data-q="2-1"></div>
+                <div class="img-card"><img class="question-img" src="pic/p7.png"><br><input type="text" class="input-box" data-q="2-2"></div>
+                <div class="img-card"><img class="question-img" src="pic/p8.png"><br><input type="text" class="input-box" data-q="2-3"></div>
+                <div class="img-card"><img class="question-img" src="pic/p9.png"><br><input type="text" class="input-box" data-q="2-4"></div>
+                <div class="img-card"><img class="question-img" src="pic/p10.png"><br><input type="text" class="input-box" data-q="2-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2题 -->
+    <div class="question-paper">
+        <div class="page-title">二、听录音，选出正确的答语</div>
+        <div id="q2list"></div>
+    </div>
+
+    <!-- 第3题 -->
+    <div class="question-paper">
+        <div class="page-title">三、听录音，选择你所听到的单词</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;" id="q3grid"></div>
+    </div>
+
+    <!-- 第4题 -->
+    <div class="question-paper">
+        <div class="page-title">四、听音判断，相符√，不符×</div>
+        <div id="q4grid" style="display:flex;flex-wrap:wrap;gap:18px;"></div>
+    </div>
+
+    <!-- 第5题 -->
+    <div class="question-paper">
+        <div class="page-title">五、听录音，圈出相符图片</div>
+        <div id="q5area" style="display:flex;flex-wrap:wrap;gap:20px;"></div>
+    </div>
+
+    <div class="section-title">📖 读写部分 Reading & Writing</div>
+
+    <!-- 第6题 -->
+    <div class="question-paper">
+        <div class="page-title">六、读一读，选出最佳答案</div>
+        <div id="q6list"></div>
+        <div><strong>6. How many small apples do we need（需要）?</strong>
+            <div id="balanceArea" style="display:flex; gap:30px; justify-content:center; margin:20px 0; flex-wrap:wrap;"></div>
+            <div><span class="opt-item" data-q="6-7" data-ans="A">A. Four</span><span class="opt-item" data-q="6-7" data-ans="B">B. Six</span><span class="opt-item" data-q="6-7" data-ans="C">C. Two</span></div>
+        </div>
+    </div>
+
+    <!-- 第7题 -->
+    <div class="question-paper">
+        <div class="page-title">七、选出正确答语</div>
+        <div id="q7area"></div>
+    </div>
+
+    <!-- 第8题 -->
+    <div class="question-paper">
+        <style>
+            .eighth .plan-container { display:flex; gap:15px; flex-wrap:wrap; margin:20px 0; justify-content:center; }
+            .eighth .plan-card { border:2px solid #333; padding:10px; border-radius:8px; text-align:center; flex:1; min-width:220px; background:#fff; }
+            .eighth .plan-title { background:#ffeaa7; padding:5px; border-radius:5px; cursor:grab; font-weight:bold; margin-bottom:10px; }
+            .eighth .floor-plan { display:grid; gap:2px; background:#333; border:2px solid #333; margin:0 auto; width:200px; }
+            .eighth .room { background:#e8f4fc; border:1px solid #333; padding:8px; font-size:12px; text-align:center; }
+            .eighth .living-room { background:#c8e6c9; }
+            .eighth .kitchen { background:#fff3cd; }
+            .eighth .bathroom { background:#ffd6d6; }
+            .eighth .study { background:#e1bee7; }
+        </style>
+        <div class="eighth">
+            <div class="page-title">八、阅读选择，将正确户型拖入框内</div>
+            <div>
+                <p>Customer 1: I have two kids, a boy and a girl. I want three bedrooms, two bathrooms, a study, a kitchen and a big living room. <span class="answer-box" id="ans1_8" ondragover="allowDrop8(event)" ondrop="drop8(event)"></span></p>
+                <p>Customer 2: I want two bedrooms and a kitchen. I have many friends. I want a big living room and two bathrooms. <span class="answer-box" id="ans2_8" ondragover="allowDrop8(event)" ondrop="drop8(event)"></span></p>
+                <p>Customer 3: I want a bedroom, a living room, a bathroom and a kitchen. I like to read books. I want a study. <span class="answer-box" id="ans3_8" ondragover="allowDrop8(event)" ondrop="drop8(event)"></span></p>
+            </div>
+            <div class="plan-container">
+                <div class="plan-card"><div class="plan-title" draggable="true" id="planA_8">Plan A</div><div id="contentA_8"></div></div>
+                <div class="plan-card"><div class="plan-title" draggable="true" id="planB_8">Plan B</div><div id="contentB_8"></div></div>
+                <div class="plan-card"><div class="plan-title" draggable="true" id="planC_8">Plan C</div><div id="contentC_8"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第9题 -->
+    <div class="question-paper">
+        <div class="page-title">九、故事排序 + 健康饮食建议</div>
+        <div><strong>(一) 按故事发展排序（第2图已标序号1）</strong></div>
+        <div id="comicGrid" style="display:flex; gap:15px; flex-wrap:wrap; margin:15px 0;"></div>
+        <div><strong>(二) 拖动单词到正确方框</strong></div>
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <div style="background:#e8f5e9; padding:12px; border-radius:24px;">
+                <div>✅ The boy should eat (应该吃)</div>
+                <div class="dropzone" id="dropShould1" style="width:130px;min-height:44px; border:2px dashed #2e7d32; background:#fff; margin-top:6px;"></div>
+                <div class="dropzone" id="dropShould2" style="width:130px;min-height:44px; border:2px dashed #2e7d32; background:#fff; margin-top:6px;"></div>
+            </div>
+            <div style="background:#ffebee; padding:12px; border-radius:24px;">
+                <div>❌ The boy shouldn't eat (不应该吃)</div>
+                <div class="dropzone" id="dropShouldnt1" style="width:130px;min-height:44px; border:2px dashed #c62828; background:#fff;"></div>
+                <div class="dropzone" id="dropShouldnt2" style="width:130px;min-height:44px; border:2px dashed #c62828; background:#fff; margin-top:6px;"></div>
+            </div>
+            <div>
+                <div>📦 单词库：</div>
+                <span draggable="true" class="wordItem" data-word="vegetable">vegetable 蔬菜</span>
+                <span draggable="true" class="wordItem" data-word="fish">fish 鱼</span>
+                <span draggable="true" class="wordItem" data-word="beef">beef 牛肉</span>
+                <span draggable="true" class="wordItem" data-word="ice-cream">ice-cream 冰激凌</span>
+                <span draggable="true" class="wordItem" data-word="too much">too much 太多</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第10题 -->
+    <div class="question-paper">
+        <style>
+            .tenth .drop-box { width:190px; height:32px; border:1px dashed #666; background:#f9f9f9; display:inline-block; margin:0 5px; text-align:center; line-height:30px; }
+            .tenth .filled { background:#e6f9e6; border-style:solid; border-color:#008000; }
+        </style>
+        <div class="tenth">
+            <div class="page-title">十、拖动选项补全对话</div>
+            <div style="margin-bottom:15px; text-align:center;">
+                <span class="drag-option" draggable="true" data-value="A">A. I'm hungry.</span>
+                <span class="drag-option" draggable="true" data-value="B">B. What do you want?</span>
+                <span class="drag-option" draggable="true" data-value="C">C. Vegetables and rice.</span>
+                <span class="drag-option" draggable="true" data-value="D">D. I want some fish and chicken.</span>
+                <span class="drag-option" draggable="true" data-value="E">E. What do you want to drink?</span>
+            </div>
+            <div>
+                <div>Mary: <span class="drop-box" id="drop10_1"></span> What's for dinner, Mum?</div>
+                <div>Mum: <span class="drop-box" id="drop10_2"></span></div>
+                <div>Mary: I don't like vegetables.</div>
+                <div>Mum: <span class="drop-box" id="drop10_3"></span></div>
+                <div>Mary: <span class="drop-box" id="drop10_4"></span></div>
+                <div>Mum: OK. Let's have some fish.</div>
+                <div>Mum: <span class="drop-box" id="drop10_5"></span></div>
+                <div>Mary: I want some apple juice.</div>
+                <div>Mum: OK.</div>
+                <div>Mary: Thank you.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 按钮组：提交 + 重做 -->
+    <div class="btn-group">
+        <button id="finalSubmitBtn" onclick="submitFinalScore()">提交试卷</button>
+        <button id="resetBtn" onclick="resetExam()">重做</button>
+    </div>
+</div>
+
+<script>
+// 全局学生信息
+let currentClass = "";
+let currentName = "";
+
+// ====================== 登录 ======================
+function goExam() {
+    let className = document.getElementById("className").value;
+    let studentName = document.getElementById("studentName").value.trim();
+    if (!className) { alert("请选择班级！"); return; }
+    if (!studentName) { alert("请输入姓名！"); return; }
+
+    currentClass = className;
+    currentName = studentName;
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("examPage").style.display = "flex";
+}
+
+// ====================== 重新做题 ======================
+function resetExam() {
+    if(!confirm("确定要清空所有答案，重新做题吗？")) return;
+    // 清空所有输入
+    document.querySelectorAll(".input-box").forEach(i => i.value = "");
+    document.querySelectorAll(".opt-item").forEach(o => o.classList.remove("selected"));
+    document.querySelectorAll(".img-opt").forEach(i => i.style.border = "2px solid transparent");
+    document.querySelectorAll(".answer-box").forEach(b => { b.innerText = ""; b.classList.remove("filled"); });
+    document.querySelectorAll(".drop-box").forEach(d => { d.innerText = ""; d.dataset.dropped = ""; d.classList.remove("filled"); });
+    document.querySelectorAll(".dropzone").forEach(z => { z.innerHTML = ""; z.dataset.filled = ""; });
+    document.querySelectorAll('[id^="order"]').forEach(o => {
+        if (o.id !== "order2") o.value = "";
+    });
+
+    // 恢复提交按钮
+    let btn = document.getElementById("finalSubmitBtn");
+    btn.disabled = false;
+    btn.innerText = "提交试卷";
+    btn.style.background = "#28a745";
+
+    alert("已清空答案，可以重新做题啦！");
+}
+
+// ====================== 初始化所有题目交互 ======================
+window.onload = function(){
+    initQ2();
+    initQ3();
+    initQ4();
+    initQ5();
+    initQ6();
+    initQ7();
+    initQ8();
+    initQ9();
+    initQ10();
+};
+
+// 第二题
+function initQ2(){
+    const ans={"2-1":"B","2-2":"B","2-3":"A","2-4":"A","2-5":"B"};
+    const opts=[["A. Yes, he is.","B. No, she isn't."],["A. He's behind the door.","B. It's in the kitchen."],["A. They're my trousers.","B. It's Guo Yang's."],["A. No, I don't.","B. Yes, I don't."],["A. I like rice.","B. Fish, rice and some chicken."]];
+    let c=document.getElementById('q2list');
+    for(let i=1;i<=5;i++){
+        let d=document.createElement('div'); d.style.marginBottom='14px'; d.innerHTML=`<b>${i}.</b> `;
+        opts[i-1].forEach(o=>{
+            let s=document.createElement('span'); s.className='opt-item'; s.dataset.q=`2-${i}`; s.dataset.ans=o.charAt(0); s.innerText=o;
+            s.onclick=()=>{ c.querySelectorAll(`[data-q="2-${i}"]`).forEach(x=>x.classList.remove('selected')); s.classList.add('selected'); };
+            d.appendChild(s);
+        });
+        c.appendChild(d);
+    }
+}
+// 第三题
+function initQ3(){
+    const data=["dinner","lunch","how","what","what","whose","sixteen","thirteen","those","these","thirteen","twelve","kitchen","library","behind","under","water","watch","home","come"];
+    const ans={"3-1":"A","3-2":"A","3-3":"B","3-4":"A","3-5":"B","3-6":"A","3-7":"A","3-8":"B","3-9":"B","3-10":"A"};
+    let c=document.getElementById('q3grid');
+    for(let i=1;i<=10;i++){
+        let d=document.createElement('div'); d.innerHTML=`<b>${i}.</b> <span class="opt-item" data-q="3-${i}" data-ans="A">A. ${data[(i-1)*2]}</span> <span class="opt-item" data-q="3-${i}" data-ans="B">B. ${data[(i-1)*2+1]}</span>`;
+        c.appendChild(d);
+    }
+    c.querySelectorAll('.opt-item').forEach(el=>{
+        el.onclick=()=>{ let q=el.dataset.q; c.querySelectorAll(`[data-q="${q}"]`).forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); };
+    });
+}
+// 第四题
+function initQ4(){
+    const imgs=["pic/p11.png","pic/p12.png","pic/p13.png","pic/p14.png","pic/p15.png"];
+    const ans={"4-1":"√","4-2":"×","4-3":"×","4-4":"×","4-5":"√"};
+    let g=document.getElementById('q4grid');
+    for(let i=1;i<=5;i++){
+        let card=document.createElement('div'); card.style.border='1px solid #ddd'; card.style.borderRadius='20px'; card.style.padding='10px'; card.style.textAlign='center'; card.style.width='140px';
+        card.innerHTML=`<div>${i}.</div><img src="${imgs[i-1]}" width="100"><div><span class="opt-item" data-q="4-${i}" data-ans="√">√</span><span class="opt-item" data-q="4-${i}" data-ans="×">×</span></div>`;
+        g.appendChild(card);
+    }
+    g.querySelectorAll('.opt-item').forEach(el=>{
+        el.onclick=()=>{ let q=el.dataset.q; g.querySelectorAll(`[data-q="${q}"]`).forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); };
+    });
+}
+// 第五题
+function initQ5(){
+    const imgs=[["pic/p21A.png","pic/p21B.png"],["pic/p22A.png","pic/p22B.png"],["pic/p23A.png","pic/p23B.png"],["pic/p24A.png","pic/p24B.png"]];
+    const ans={"5-1":"A","5-2":"B","5-3":"B","5-4":"A"};
+    let c=document.getElementById('q5area');
+    for(let i=1;i<=4;i++){
+        let d=document.createElement('div'); d.style.border='1px solid #ccc'; d.style.borderRadius='20px'; d.style.padding='8px';
+        d.innerHTML=`<div><strong>${i}.</strong></div><div style="display:flex;gap:12px;"><div class="img-opt" data-q="5-${i}" data-ans="A" style="cursor:pointer;border:2px solid transparent;padding:4px;"><img src="${imgs[i-1][0]}" width="90"><div>A</div></div><div class="img-opt" data-q="5-${i}" data-ans="B" style="cursor:pointer;border:2px solid transparent;padding:4px;"><img src="${imgs[i-1][1]}" width="90"><div>B</div></div></div>`;
+        c.appendChild(d);
+    }
+    c.querySelectorAll('.img-opt').forEach(el=>{
+        el.onclick=()=>{ let q=el.dataset.q; c.querySelectorAll(`[data-q="${q}"]`).forEach(x=>x.style.border='2px solid transparent'); el.style.border='3px solid #007bff'; el.classList.add('selected'); };
+    });
+}
+// 第六题
+function initQ6(){
+    const ans={"6-1":"C","6-2":"C","6-3":"B","6-4":"A","6-5":"C","6-6":"A","6-7":"C"};
+    const texts=["1. ______ have a big living room.","1. ______ sweater is that ?","2. - What do you want ? - I want some ______.","3. - How many monkeys can you see ? ______.","4. - Is this your skirt ? - ______ It's my sister's.","5. It's a drink. It's brown. It's ______."];
+    const opts=[["A. My","B. Our","C. We"],["A. What","B. Who's","C. Whose"],["A. breads","B. orange juice","C. tomato"],["A. Eleven.","B. Yes, I can.","C. They're funny."],["A. Yes, this is.","B. No, this isn't.","C. No, it isn't."],["A. coffee","B. milk","C. water"]];
+    let c=document.getElementById('q6list');
+    for(let i=0;i<texts.length;i++){
+        let d=document.createElement('div'); d.style.marginBottom='16px'; d.innerHTML=`<div>${texts[i]}</div>`;
+        let od=document.createElement('div');
+        opts[i].forEach(o=>{
+            let s=document.createElement('span'); s.className='opt-item'; s.dataset.q=`6-${i+1}`; s.dataset.ans=o.charAt(0); s.innerText=o;
+            s.onclick=()=>{ c.querySelectorAll(`[data-q="6-${i+1}"]`).forEach(x=>x.classList.remove('selected')); s.classList.add('selected'); };
+            od.appendChild(s);
+        });
+        d.appendChild(od); c.appendChild(d);
+    }
+    let bal=document.getElementById('balanceArea');
+    bal.innerHTML=`<div style="position:relative;width:190px;height:130px;background:#fff7e8;border-radius:32px;padding:5px;"><div style="position:absolute;bottom:8px;left:50%;width:36px;height:8px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;bottom:16px;left:50%;width:5px;height:70px;background:#5a3e1b;"></div><div style="position:absolute;top:34px;left:50%;width:150px;height:3px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;top:44px;left:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;gap:3px;"><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div></div><div style="position:absolute;top:44px;right:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;gap:2px;justify-content:center;"><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div><div style="width:12px;height:12px;background:#e63946;border-radius:50%;"></div></div></div><div style="position:relative;width:190px;height:130px;background:#fff7e8;border-radius:32px;"><div style="position:absolute;bottom:8px;left:50%;width:36px;height:8px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;bottom:16px;left:50%;width:5px;height:70px;background:#5a3e1b;"></div><div style="position:absolute;top:34px;left:50%;width:150px;height:3px;background:#5a3e1b;transform:translateX(-50%);"></div><div style="position:absolute;top:44px;left:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;align-items:center;"><span style="font-size:28px;">?</span></div><div style="position:absolute;top:44px;right:10px;width:50px;height:24px;border:2px solid #5a3e1b;background:#fff;display:flex;justify-content:center;"><div style="width:18px;height:18px;background:#e63946;border-radius:50%;"></div></div></div>`;
+    document.querySelectorAll('[data-q="6-7"]').forEach(el=>{
+        el.onclick=()=>{ document.querySelectorAll('[data-q="6-7"]').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); };
+    });
+}
+// 第七题
+function initQ7(){
+    const q=["It's a drink. It's white. It's","Where's Li Ming's mother?","What are these?","How many books do you have?","Whose shirt is that?"];
+    const o=[["A. apple juice","B. milk"],["A. She's in the kitchen.","B. He's in the living room."],["A. A monkey.","B. They're monkeys."],["A. Eighteen.","B. I'm eight."],["A. It's Danny.","B. It's Danny's."]];
+    const ans={"7-1":"B","7-2":"A","7-3":"B","7-4":"A","7-5":"B"};
+    let c=document.getElementById('q7area');
+    for(let i=1;i<=5;i++){
+        let d=document.createElement('div'); d.style.marginBottom='14px'; d.innerHTML=`<b>${i}.</b> ${q[i-1]}<br>`;
+        o[i-1].forEach(opt=>{
+            let s=document.createElement('span'); s.className='opt-item'; s.dataset.q=`7-${i}`; s.dataset.ans=opt.charAt(0); s.innerText=opt;
+            s.onclick=()=>{ c.querySelectorAll(`[data-q="7-${i}"]`).forEach(x=>x.classList.remove('selected')); s.classList.add('selected'); };
+            d.appendChild(s);
+        });
+        c.appendChild(d);
+    }
+}
+// 第八题
+function initQ8(){
+    const t={A:`<div class="floor-plan" style="grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto auto;"><div class="room">Bedroom 1</div><div class="room">Bedroom 2</div><div class="room">Bedroom 3</div><div class="room study">Study</div><div class="room bathroom">Bathroom 1</div><div class="room living-room">Big Living Room</div><div class="room kitchen">Kitchen</div><div class="room bathroom">Bathroom 2</div></div>`,B:`<div class="floor-plan" style="grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;"><div class="room">Bedroom 1</div><div class="room">Bedroom 2</div><div class="room bathroom">Bathroom 1</div><div class="room bathroom">Bathroom 2</div><div class="room living-room">Big Living Room</div><div class="room kitchen">Kitchen</div></div>`,C:`<div class="floor-plan" style="grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;"><div class="room">Bedroom</div><div class="room bathroom">Bathroom</div><div class="room living-room">Living Room</div><div class="room kitchen">Kitchen</div><div class="room study">Study</div></div>`};
+    let arr=[t.A,t.B,t.C]; for(let i=arr.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+    document.getElementById('contentA_8').innerHTML=arr[0];
+    document.getElementById('contentB_8').innerHTML=arr[1];
+    document.getElementById('contentC_8').innerHTML=arr[2];
+    window.allowDrop8=e=>e.preventDefault();
+    window.drag8=e=>e.dataTransfer.setData("text",e.target.id);
+    window.drop8=e=>{e.preventDefault();let t=e.dataTransfer.getData("text");e.target.innerText=document.getElementById(t).innerText;e.target.classList.add('filled');};
+    document.querySelectorAll('#planA_8,#planB_8,#planC_8').forEach(el=>el.addEventListener('dragstart',drag8));
+}
+// 第九题
+function initQ9(){
+    const cs=['comic1.png','comic2.png','comic3.png','comic4.png'];
+    let g=document.getElementById('comicGrid');
+    for(let i=1;i<=4;i++){
+        let card=document.createElement('div'); card.style.textAlign='center'; card.style.border='1px solid #ccc'; card.style.borderRadius='20px'; card.style.padding='8px';
+        card.innerHTML=`<img src="${cs[i-1]}" width="100"><div><input type="text" id="order${i}" maxlength="1" style="width:55px;text-align:center;" ${i===2?'value="1" readonly':''} placeholder="序号"></div>`;
+        g.appendChild(card);
+    }
+    ['order1','order3','order4'].forEach(id=>{
+        let inp=document.getElementById(id); if(inp) inp.addEventListener('input',()=>inp.value=inp.value.replace(/[^1-4]/g,''));
+    });
+    let w='';
+    document.querySelectorAll('.wordItem').forEach(el=>{
+        el.style.display='inline-block'; el.style.background='#bbdef5'; el.style.margin='4px'; el.style.padding='6px 14px'; el.style.borderRadius='40px'; el.style.cursor='grab';
+        el.addEventListener('dragstart',e=>{w=el.dataset.word;});
+    });
+    document.querySelectorAll('.dropzone').forEach(z=>{
+        z.addEventListener('dragover',e=>e.preventDefault());
+        z.addEventListener('drop',e=>{e.preventDefault();if(z.children.length>0)return;let d=document.createElement('div');d.innerText=w;d.style.background='#c8e6c9';d.style.padding='5px';d.style.borderRadius='20px';d.style.textAlign='center';z.dataset.filled=w;z.appendChild(d);});
+    });
+}
+// 第十题
+function initQ10(){
+    let v='';
+    document.querySelectorAll('.drag-option').forEach(el=>{
+        el.style.display='inline-block'; el.style.background='#f0f8ff'; el.style.padding='4px 12px'; el.style.margin='5px'; el.style.borderRadius='30px'; el.style.cursor='grab';
+        el.addEventListener('dragstart',e=>{v=el.dataset.value;});
+    });
+    const map={'A':'A. I\'m hungry.','B':'B. What do you want?','C':'C. Vegetables and rice.','D':'D. I want some fish and chicken.','E':'E. What do you want to drink?'};
+    document.querySelectorAll('.drop-box').forEach(b=>{
+        b.addEventListener('dragover',e=>e.preventDefault());
+        b.addEventListener('drop',e=>{e.preventDefault();if(b.innerText!=='')return;b.innerText=map[v];b.dataset.dropped=v;b.classList.add('filled');});
+    });
+}
+
+// ====================== 统一判分 ======================
+function checkAll(){
+    let res=[
+        checkQ1(), checkQ2(), checkQ3(), checkQ4(), checkQ5(),
+        checkQ6(), checkQ7(), checkQ8(), checkQ9(), checkQ10()
+    ];
+    let total=0, cor=0, err=0;
+    res.forEach(r=>{total+=r.total; cor+=r.correct; err+=r.wrong;});
+    return {details:res, total, correct:cor, wrong:err};
+}
+
+// 第1题
+function checkQ1(){
+    const ans={"1-1":"3","1-2":"4","1-3":"5","1-4":"1","1-5":"2","2-1":"4","2-2":"1","2-3":"5","2-4":"3","2-5":"2"};
+    let c=0,t=Object.keys(ans).length;
+    for(let q in ans){let inp=document.querySelector(`.input-box[data-q="${q}"]`);if(inp&&inp.value.trim()===ans[q])c++;}
+    return {name:"第一题 听力标序号",correct:c,wrong:t-c,total:t};
+}
+// 第2题
+function checkQ2(){
+    const ans={"2-1":"B","2-2":"B","2-3":"A","2-4":"A","2-5":"B"};
+    let c=0,t=5;
+    for(let q in ans){let s=document.querySelector(`#q2list .opt-item[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第二题 听力选答语",correct:c,wrong:t-c,total:t};
+}
+// 第3题
+function checkQ3(){
+    const ans={"3-1":"A","3-2":"A","3-3":"B","3-4":"A","3-5":"B","3-6":"A","3-7":"A","3-8":"B","3-9":"B","3-10":"A"};
+    let c=0,t=10;
+    for(let q in ans){let s=document.querySelector(`#q3grid .opt-item[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第三题 听力选单词",correct:c,wrong:t-c,total:t};
+}
+// 第4题
+function checkQ4(){
+    const ans={"4-1":"√","4-2":"×","4-3":"×","4-4":"×","4-5":"√"};
+    let c=0,t=5;
+    for(let q in ans){let s=document.querySelector(`#q4grid .opt-item[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第四题 听力判断题",correct:c,wrong:t-c,total:t};
+}
+// 第5题
+function checkQ5(){
+    const ans={"5-1":"A","5-2":"B","5-3":"B","5-4":"A"};
+    let c=0,t=4;
+    for(let q in ans){let s=document.querySelector(`#q5area .img-opt[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第五题 听力选图片",correct:c,wrong:t-c,total:t};
+}
+// 第6题
+function checkQ6(){
+    const ans={"6-1":"C","6-2":"C","6-3":"B","6-4":"A","6-5":"C","6-6":"A","6-7":"C"};
+    let c=0,t=7;
+    for(let q in ans){let s=document.querySelector(`.opt-item[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第六题 单项选择",correct:c,wrong:t-c,total:t};
+}
+// 第7题
+function checkQ7(){
+    const ans={"7-1":"B","7-2":"A","7-3":"B","7-4":"A","7-5":"B"};
+    let c=0,t=5;
+    for(let q in ans){let s=document.querySelector(`#q7area .opt-item[data-q="${q}"].selected`);if(s&&s.dataset.ans===ans[q])c++;}
+    return {name:"第七题 情景应答",correct:c,wrong:t-c,total:t};
+}
+// 第8题
+function checkQ8(){
+    const map={ans1_8:"Plan A",ans2_8:"Plan B",ans3_8:"Plan C"};
+    let c=0,t=3;
+    if(document.getElementById('ans1_8').innerText.trim()===map.ans1_8)c++;
+    if(document.getElementById('ans2_8').innerText.trim()===map.ans2_8)c++;
+    if(document.getElementById('ans3_8').innerText.trim()===map.ans3_8)c++;
+    return {name:"第八题 阅读户型匹配",correct:c,wrong:t-c,total:t};
+}
+// 第9题
+function checkQ9(){
+    let sort=0;
+    if(document.getElementById('order1')?.value==='4')sort++;
+    if(document.getElementById('order3')?.value==='2')sort++;
+    if(document.getElementById('order4')?.value==='3')sort++;
+    let ok1=0;
+    let a=document.getElementById('dropShould1').dataset.filled,b=document.getElementById('dropShould2').dataset.filled;
+    if(a==='vegetable'||a==='fish')ok1++;if(b==='vegetable'||b==='fish')ok1++;
+    let bad=['beef','ice-cream','too much'],ok2=0;
+    let c=document.getElementById('dropShouldnt1').dataset.filled,d=document.getElementById('dropShouldnt2').dataset.filled;
+    if(bad.includes(c))ok2++;if(bad.includes(d))ok2++;
+    let all=sort+ok1+ok2;
+    return {name:"第九题 排序与健康饮食",correct:all,wrong:7-all,total:7};
+}
+// 第10题
+function checkQ10(){
+    const ans={'drop10_1':'A','drop10_2':'C','drop10_3':'B','drop10_4':'D','drop10_5':'E'};
+    let c=0,t=5;
+    for(let id in ans){if(document.getElementById(id).dataset.dropped===ans[id])c++;}
+    return {name:"第十题 补全对话",correct:c,wrong:t-c,total:t};
+}
+
+// ====================== 提交试卷 ======================
+async function submitFinalScore(){
+    if(!confirm("确定提交试卷吗？提交后无法修改！"))return;
+
+    const result = checkAll();
+    const rate = Math.round((result.correct / result.total) * 100);
+
+    let detailText = "";
+    result.details.forEach((item, idx) => {
+        detailText += `${idx+1}、${item.name}：正确 ${item.correct} 个，错误 ${item.wrong} 个\n`;
+    });
+
+    let weakComment = "需要加强的方面：听力理解、词汇与句型、阅读理解，建议多听多读多练习，提升综合能力。";
+    if(rate >= 90) weakComment = "本次测试表现非常优秀！继续保持，再接再厉！";
+
+    // 标题改为：英语素质测试评价
+    let report = `
+📝 英语素质测试评价
+====================
+${detailText}
+====================
+整体优秀率：${rate}%
+
+${weakComment}
+`;
+
+    alert(report);
+
+    // 禁用提交按钮
+    let btn = document.getElementById("finalSubmitBtn");
+    btn.disabled = true;
+    btn.innerText = "已提交";
+    btn.style.background = "#999";
+}
+</script>
+</body>
+</html>
