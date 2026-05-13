@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 手机苹果端完美适配核心 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>英语专项测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            padding: 12px;
+            font-size: 15px;
+            /* 苹果端顺滑滚动 */
+            -webkit-overflow-scrolling: touch;
+        }
+        /* 登录页 */
+        .login-wrap {
+            max-width: 100%;
+            margin: 40px auto 0;
+            background: #fff;
+            padding: 25px 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .login-title {
+            font-size: 22px;
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .form-item {
+            margin-bottom: 18px;
+        }
+        .form-item label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 15px;
+            color: #333;
+        }
+        .form-item select,
+        .form-item input {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            /* 苹果端样式兼容 */
+            -webkit-appearance: none;
+            appearance: none;
+            background: #fff;
+        }
+        .enter-btn {
+            width: 100%;
+            height: 46px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .enter-btn:disabled {
+            background: #999;
+        }
+
+        #examPage {
+            max-width: 100%;
+            margin: 0 auto;
+            display: none;
+        }
+        .info-bar {
+            background: #e8f4fd;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .paper {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .paper-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #eee;
+        }
+        .q-wrap {
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .q-wrap:last-child{border:none;margin-bottom:0;padding-bottom:0;}
+        .word-list {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .red-key{
+            color: red;
+            font-weight: bold;
+        }
+        .q-sentence {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .ans-input {
+            width: 60px;
+            height: 34px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 0 6px;
+            font-size: 14px;
+            margin: 0 4px;
+            text-align: center;
+        }
+        .opt-btn {
+            padding: 6px 12px;
+            margin: 4px 6px 4px 0;
+            border: 1px solid #007bff;
+            border-radius: 6px;
+            background: #fff;
+            color: #007bff;
+            font-size: 13px;
+            cursor: pointer;
+            /* 触屏优化 */
+            touch-action: manipulation;
+        }
+        .opt-btn:active {
+            background: #007bff;
+            color: #fff;
+        }
+        .fill-span {
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            line-height: 34px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            margin: 0 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .tf-btn {
+            padding: 6px 16px;
+            margin: 0 4px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .tf-btn.selected {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+        .passage {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            text-align: center;
+            margin: 25px 0;
+        }
+        .submit-btn, .reset-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            margin: 0 6px 8px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .submit-btn {
+            background: #28a745;
+            color: #fff;
+        }
+        .reset-btn {
+            background: #ff7f50;
+            color: #fff;
+        }
+        .score-box {
+            background: #f0fff4;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            margin-bottom:15px;
+        }
+        .error-analyze {
+            background: #fff2f2;
+            padding:12px;
+            border-radius:10px;
+            display:none;
+            margin-bottom:15px;
+        }
+        .error-analyze h4 {
+            color:#d93025;
+            margin-bottom:8px;
+            font-size:15px;
+        }
+        .error-item {
+            font-size:13px;
+            line-height:1.7;
+            margin-bottom:6px;
+            color:#333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginPage">
+    <div class="login-title">英语专项测试</div>
+    <div class="form-item">
+        <label>请选择班级</label>
+        <select id="classSel">
+            <option value="">请选择班级</option>
+            <option value="3年级10班">3年级10班</option>
+            <option value="3年级11班">3年级11班</option>
+            <option value="3年级12班">3年级12班</option>
+        </select>
+    </div>
+    <div class="form-item">
+        <label>输入姓名</label>
+        <input type="text" id="nameInp" placeholder="请输入姓名">
+    </div>
+    <button class="enter-btn" id="enterBtn" onclick="enterExam()">进入考试</button>
+</div>
+
+<div id="examPage">
+    <div class="info-bar">
+        班级：<span id="showClass"></span> &nbsp;&nbsp; 姓名：<span id="showName"></span>
+    </div>
+
+    <div class="paper">
+        <div class="paper-title">一、读一读，补全句子（只填写单词序号即可，不区分大小写）</div>
+        <div class="word-list">
+            <span class="red-key">A</span>. school &nbsp;&nbsp;
+            <span class="red-key">B</span>. sing &nbsp;&nbsp;
+            <span class="red-key">C</span>. library &nbsp;&nbsp;
+            <span class="red-key">D</span>. playground &nbsp;&nbsp;
+            <span class="red-key">E</span>. floor &nbsp;&nbsp;
+            <span class="red-key">F</span>. draw &nbsp;&nbsp;
+            <span class="red-key">G</span>. play &nbsp;&nbsp;
+            <span class="red-key">H</span>. Where
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">① Welcome to our <input class="ans-input" data-key="q1-1" placeholder="填序号">.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">② We <input class="ans-input" data-key="q1-2" placeholder="填序号"> in the music room.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">③ We <input class="ans-input" data-key="q1-3" placeholder="填序号"> in the art room.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">④ That's our <input class="ans-input" data-key="q1-4" placeholder="填序号">. It's big.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">⑤ This is the lab. It's on the first <input class="ans-input" data-key="q1-5" placeholder="填序号">.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">⑥ We read in the <input class="ans-input" data-key="q1-6" placeholder="填序号">.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">⑦ — <input class="ans-input" data-key="q1-7" placeholder="填序号"> is your classroom? — It's on the third floor.</div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">⑧ We <input class="ans-input" data-key="q1-8" placeholder="填序号"> on the playground.</div>
+        </div>
+    </div>
+
+    <div class="paper">
+        <div class="paper-title">二、读一读，选出最佳选项（点击选项填入横线）</div>
+        <div class="q-wrap">
+            <div class="q-sentence">① — Is this your classroom? — <span class="fill-span" data-key="q2-1"></span> It's our lab.</div>
+            <div style="margin-top:8px;">
+                <button class="opt-btn" data-q="q2-1" data-val="A">A. Yes, it is.</button>
+                <button class="opt-btn" data-q="q2-1" data-val="B">B. No, it isn't.</button>
+            </div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">② — Where's your music room? — It's on the <span class="fill-span" data-key="q2-2"></span> floor.</div>
+            <div style="margin-top:8px;">
+                <button class="opt-btn" data-q="q2-2" data-val="A">A. second</button>
+                <button class="opt-btn" data-q="q2-2" data-val="B">B. two</button>
+            </div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">③ — Is this your art room? — Yes, it is. We <span class="fill-span" data-key="q2-3"></span> here.</div>
+            <div style="margin-top:8px;">
+                <button class="opt-btn" data-q="q2-3" data-val="A">A. draw</button>
+                <button class="opt-btn" data-q="q2-3" data-val="B">B. sing</button>
+            </div>
+        </div>
+        <div class="q-wrap">
+            <div class="q-sentence">④ — <span class="fill-span" data-key="q2-4"></span> is Li Ming? — He's in the lab.</div>
+            <div style="margin-top:8px;">
+                <button class="opt-btn" data-q="q2-4" data-val="A">A. How</button>
+                <button class="opt-btn" data-q="q2-4" data-val="B">B. Where</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="paper">
+        <div class="paper-title">三、阅读短文，判断正(T)误(F)</div>
+        <div class="passage">
+Hi! I'm Tony. I'm in a new school now. Our school is big and beautiful. My classroom is on the second floor. It's very nice. The music room is on the third floor. We sing there. The art room is on the first floor. We draw in it. Our library is on the first floor, too. We read in the library. And we have a big playground. We play on the playground. I like my school.
+        </div>
+        <div class="q-line">(1) Tony's classroom is on the first floor.
+            <button class="tf-btn" data-key="q3-1" data-val="T">T</button>
+            <button class="tf-btn" data-key="q3-1" data-val="F">F</button>
+        </div>
+        <div class="q-line" style="margin-top:12px;">(2) The music room is on the third floor.
+            <button class="tf-btn" data-key="q3-2" data-val="T">T</button>
+            <button class="tf-btn" data-key="q3-2" data-val="F">F</button>
+        </div>
+        <div class="q-line" style="margin-top:12px;">(3) We sing in the music room.
+            <button class="tf-btn" data-key="q3-3" data-val="T">T</button>
+            <button class="tf-btn" data-key="q3-3" data-val="F">F</button>
+        </div>
+        <div class="q-line" style="margin-top:12px;">(4) The library is on the second floor.
+            <button class="tf-btn" data-key="q3-4" data-val="T">T</button>
+            <button class="tf-btn" data-key="q3-4" data-val="F">F</button>
+        </div>
+        <div class="q-line" style="margin-top:12px;">(5) The playground is big.
+            <button class="tf-btn" data-key="q3-5" data-val="T">T</button>
+            <button class="tf-btn" data-key="q3-5" data-val="F">F</button>
+        </div>
+    </div>
+
+    <div class="score-box" id="scoreBox"></div>
+    <div class="error-analyze" id="errorAnalyze">
+        <h4>❌ 错题解析</h4>
+        <div id="errorList"></div>
+    </div>
+
+    <div class="btn-group">
+        <button class="submit-btn" onclick="calcScore()">提交试卷</button>
+        <button class="reset-btn" onclick="resetAll()">重做试卷</button>
+    </div>
+</div>
+
+<script>
+let curClass = "";
+let curName = "";
+let submitLock = false;
+
+const answerKey = {
+    "q1-1":"A","q1-2":"B","q1-3":"F","q1-4":"D","q1-5":"E","q1-6":"C","q1-7":"H","q1-8":"G",
+    "q2-1":"B","q2-2":"A","q2-3":"A","q2-4":"B",
+    "q3-1":"F","q3-2":"T","q3-3":"T","q3-4":"F","q3-5":"T"
+};
+
+const analyzeText = {
+    "q1-1":"句意：欢迎来到我们的学校，选A school。",
+    "q1-2":"句意：我们在音乐教室唱歌，选B sing。",
+    "q1-3":"句意：我们在美术教室画画，选F draw。",
+    "q1-4":"句意：那是我们的操场，很大，选D playground。",
+    "q1-5":"句意：实验室在一楼，楼层用E floor。",
+    "q1-6":"句意：我们在图书馆看书，选C library。",
+    "q1-7":"句意：询问地点用H Where。",
+    "q1-8":"句意：我们在操场玩耍，选G play。",
+    "q2-1":"答句说明不是教室，要用否定回答B。",
+    "q2-2":"表示楼层要用序数词second，选A。",
+    "q2-3":"美术教室是画画的地方，选A draw。",
+    "q2-4":"答句是地点，问句用Where提问，选B。",
+    "q3-1":"文中教室在二楼，不是一楼，故选F。",
+    "q3-2":"文中音乐教室在三楼，表述正确，选T。",
+    "q3-3":"我们在音乐教室唱歌，表述正确，选T。",
+    "q3-4":"图书馆在一楼，不是二楼，选F。",
+    "q3-5":"文中操场很大，表述正确，选T。"
+};
+
+const qName = {
+    "q1-1":"一①","q1-2":"一②","q1-3":"一③","q1-4":"一④","q1-5":"一⑤","q1-6":"一⑥","q1-7":"一⑦","q1-8":"一⑧",
+    "q2-1":"二①","q2-2":"二②","q2-3":"二③","q2-4":"二④",
+    "q3-1":"三①","q3-2":"三②","q3-3":"三③","q3-4":"三④","q3-5":"三⑤"
+};
+
+function enterExam(){
+    let cls = document.getElementById("classSel").value;
+    let name = document.getElementById("nameInp").value.trim();
+    if(!cls){alert("请选择班级");return;}
+    if(!name){alert("请输入姓名");return;}
+    curClass = cls;
+    curName = name;
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("examPage").style.display = "block";
+    document.getElementById("showClass").innerText = curClass;
+    document.getElementById("showName").innerText = curName;
+}
+
+document.querySelectorAll(".opt-btn").forEach(btn=>{
+    btn.onclick = function(){
+        let q = this.dataset.q;
+        let val = this.dataset.val;
+        document.querySelector(`.fill-span[data-key="${q}"]`).innerText = val;
+    }
+});
+
+document.querySelectorAll(".tf-btn").forEach(btn=>{
+    btn.onclick = function(){
+        let key = this.dataset.key;
+        document.querySelectorAll(`.tf-btn[data-key="${key}"]`).forEach(b=>b.classList.remove("selected"));
+        this.classList.add("selected");
+    }
+});
+
+async function calcScore(){
+    if(submitLock){alert("正在提交中，请勿重复点击");return;}
+    let right = 0, total = 0;
+    let errorList = [];
+    let answers = {};
+
+    document.querySelectorAll(".ans-input").forEach(inp=>{
+        let k = inp.dataset.key;
+        let val = inp.value.trim().toUpperCase();
+        answers[k] = val;
+        total++;
+        if(val === answerKey[k]){right++;}else{errorList.push({key:k,your:val||"未答",correct:answerKey[k]});}
+    });
+
+    ["q2-1","q2-2","q2-3","q2-4"].forEach(k=>{
+        let txt = document.querySelector(`.fill-span[data-key="${k}"]`).innerText.trim();
+        answers[k] = txt;
+        total++;
+        if(txt === answerKey[k]){right++;}else{errorList.push({key:k,your:txt||"未答",correct:answerKey[k]});}
+    });
+
+    ["q3-1","q3-2","q3-3","q3-4","q3-5"].forEach(k=>{
+        let sel = document.querySelector(`.tf-btn[data-key="${k}"].selected`);
+        let v = sel ? sel.dataset.val : "未答";
+        answers[k] = v;
+        total++;
+        if(v === answerKey[k]){right++;}else{errorList.push({key:k,your:v,correct:answerKey[k]});}
+    });
+
+    let score = Math.round(right/total*100);
+    document.getElementById("scoreBox").style.display = "block";
+    document.getElementById("scoreBox").innerHTML = `总分：${score} 分｜共${total}题｜正确${right}题｜错误${errorList.length}题`;
+
+    let errHtml = "";
+    if(errorList.length>0){
+        errHtml = errorList.map(i=>`<div class="error-item">${qName[i.key]}｜你：${i.your}｜正确：${i.correct}<br>${analyzeText[i.key]}</div>`).join("");
+        document.getElementById("errorAnalyze").style.display = "block";
+        document.getElementById("errorList").innerHTML = errHtml;
+    }else{
+        document.getElementById("errorAnalyze").style.display = "none";
+        alert("✅ 全部正确，满分！");
+    }
+
+    submitLock = true;
+    try {
+        let res = await fetch("https://quickform.cn/api/wx3f6d91us", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                className: curClass,
+                studentName: curName,
+                score: score,
+                total: total,
+                correct: right,
+                wrong: errorList.length,
+                answers: answers,
+                errors: errorList.map(e=>({
+                    q: e.key,
+                    your: e.your,
+                    correct: e.correct,
+                    analyze: analyzeText[e.key]
+                }))
+            })
+        });
+        await res.json();
+        alert("提交成功！数据已上传");
+    }catch(e){
+        alert("本地阅卷完成\n网络提交异常，不影响查看成绩");
+    }
+    submitLock = false;
+}
+
+function resetAll(){
+    document.querySelectorAll(".ans-input").forEach(i=>i.value="");
+    document.querySelectorAll(".fill-span").forEach(s=>s.innerText="");
+    document.querySelectorAll(".tf-btn").forEach(b=>b.classList.remove("selected"));
+    document.getElementById("scoreBox").style.display = "none";
+    document.getElementById("errorAnalyze").style.display = "none";
+    submitLock = false;
+}
+</script>
+</body>
+</html>

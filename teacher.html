@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语专项测试 - 教师端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .refresh-info {
+            color: #666;
+            font-size: 13px;
+        }
+        .filter-bar {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .filter-bar select {
+            width: 200px;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .stats-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 5px 0;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 13px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #28a745;
+            border-radius: 4px;
+        }
+        .error {
+            color: #dc3545;
+        }
+        .success {
+            color: #28a745;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="title">英语专项测试 - 成绩统计</div>
+            <div class="refresh-info">
+                最后刷新：<span id="lastRefresh">--</span> | 
+                下次刷新：<span id="nextRefresh">10秒</span>
+            </div>
+        </div>
+
+        <!-- 筛选栏 -->
+        <div class="filter-bar">
+            <label for="classFilter">选择班级：</label>
+            <select id="classFilter" onchange="filterByClass()">
+                <option value="all">全部班级</option>
+                <option value="3年级10班">3年级10班</option>
+                <option value="3年级11班">3年级11班</option>
+                <option value="3年级12班">3年级12班</option>
+            </select>
+        </div>
+
+        <!-- 整体统计 -->
+        <div class="stats-card">
+            <div class="card-title">整体统计</div>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalStudents">0</div>
+                    <div class="stat-label">参与测试人数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgScore">0</div>
+                    <div class="stat-label">平均分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalCorrectRate">0%</div>
+                    <div class="stat-label">整体正确率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="fullScoreCount">0</div>
+                    <div class="stat-label">满分人数</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 题型正确率统计 -->
+        <div class="stats-card">
+            <div class="card-title">各题型正确率</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>题型</th>
+                            <th>题目数量</th>
+                            <th>总答题数</th>
+                            <th>正确数</th>
+                            <th>错误数</th>
+                            <th>正确率</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questionTypeStats">
+                        <tr>
+                            <td colspan="6" class="loading">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 学生列表 -->
+        <div class="stats-card">
+            <div class="card-title">学生答题详情</div>
+            <div class="student-list">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>班级</th>
+                                <th>姓名</th>
+                                <th>总分</th>
+                                <th>正确题数</th>
+                                <th>错误题数</th>
+                                <th>正确率</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTable">
+                            <tr>
+                                <td colspan="6" class="loading">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let allData = [];
+        let filteredData = [];
+        let refreshTimer = null;
+        let countdown = 10;
+
+        // 题目配置（对应学生端的大题）
+        const questionConfig = {
+            part1: { name: "一、补全句子", questions: ["q1-1","q1-2","q1-3","q1-4","q1-5","q1-6","q1-7","q1-8"] },
+            part2: { name: "二、选择最佳选项", questions: ["q2-1","q2-2","q2-3","q2-4"] },
+            part3: { name: "三、阅读短文判断正误", questions: ["q3-1","q3-2","q3-3","q3-4","q3-5"] }
+        };
+
+        // 初始化
+        window.onload = function() {
+            fetchData();
+            startRefreshTimer();
+        };
+
+        // 发起请求获取数据
+        async function fetchData() {
+            try {
+                const response = await fetch("https://quickform.cn/api/wx3f6d91us/all");
+                if (!response.ok) throw new Error("数据请求失败");
+                
+                allData = await response.json();
+                filteredData = [...allData];
+                
+                // 更新最后刷新时间
+                document.getElementById("lastRefresh").textContent = new Date().toLocaleString();
+                
+                // 渲染数据
+                renderStats();
+                renderQuestionTypeStats();
+                renderStudentTable();
+
+            } catch (error) {
+                console.error("获取数据失败：", error);
+                updateTableWithError("数据加载失败，请稍后重试");
+            }
+        }
+
+        // 开始刷新倒计时
+        function startRefreshTimer() {
+            // 清除现有定时器
+            if (refreshTimer) clearInterval(refreshTimer);
+            
+            countdown = 10;
+            updateCountdown();
+            
+            refreshTimer = setInterval(() => {
+                countdown--;
+                updateCountdown();
+                
+                if (countdown <= 0) {
+                    fetchData();
+                    countdown = 10;
+                }
+            }, 1000);
+        }
+
+        // 更新倒计时显示
+        function updateCountdown() {
+            document.getElementById("nextRefresh").textContent = `${countdown}秒`;
+        }
+
+        // 按班级筛选
+        function filterByClass() {
+            const selectedClass = document.getElementById("classFilter").value;
+            
+            if (selectedClass === "all") {
+                filteredData = [...allData];
+            } else {
+                filteredData = allData.filter(item => item.className === selectedClass);
+            }
+            
+            // 重新渲染
+            renderStats();
+            renderQuestionTypeStats();
+            renderStudentTable();
+        }
+
+        // 渲染整体统计数据
+        function renderStats() {
+            const totalStudents = filteredData.length;
+            let totalScore = 0;
+            let totalCorrect = 0;
+            let totalQuestions = 0;
+            let fullScoreCount = 0;
+
+            if (totalStudents > 0) {
+                filteredData.forEach(student => {
+                    // 累加总分
+                    totalScore += student.score;
+                    
+                    // 统计满分人数
+                    if (student.score === 100) fullScoreCount++;
+                    
+                    // 累加总正确题数和总题目数
+                    totalCorrect += student.correct;
+                    totalQuestions += student.total;
+                });
+                
+                // 计算平均分
+                const avgScore = (totalScore / totalStudents).toFixed(1);
+                
+                // 计算整体正确率
+                const totalCorrectRate = totalQuestions > 0 
+                    ? ((totalCorrect / totalQuestions) * 100).toFixed(1) + "%" 
+                    : "0%";
+
+                // 更新DOM
+                document.getElementById("totalStudents").textContent = totalStudents;
+                document.getElementById("avgScore").textContent = avgScore;
+                document.getElementById("totalCorrectRate").textContent = totalCorrectRate;
+                document.getElementById("fullScoreCount").textContent = fullScoreCount;
+            } else {
+                // 无数据时重置
+                document.getElementById("totalStudents").textContent = "0";
+                document.getElementById("avgScore").textContent = "0";
+                document.getElementById("totalCorrectRate").textContent = "0%";
+                document.getElementById("fullScoreCount").textContent = "0";
+            }
+        }
+
+        // 渲染题型正确率统计
+        function renderQuestionTypeStats() {
+            const tableBody = document.getElementById("questionTypeStats");
+            
+            // 无数据时
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="no-data">暂无数据</td></tr>`;
+                return;
+            }
+
+            // 遍历每个大题统计
+            let html = "";
+            Object.values(questionConfig).forEach(part => {
+                let partTotal = 0;    // 该题型总答题数
+                let partCorrect = 0;  // 该题型总正确数
+                let partWrong = 0;    // 该题型总错误数
+
+                // 遍历每个学生
+                filteredData.forEach(student => {
+                    // 遍历该题型的每个题目
+                    part.questions.forEach(qKey => {
+                        partTotal++;
+                        
+                        // 检查该题是否正确
+                        const isCorrect = student.answers[qKey] === student.errors.find(e => e.q === qKey)?.correct;
+                        if (isCorrect) {
+                            partCorrect++;
+                        } else {
+                            partWrong++;
+                        }
+                    });
+                });
+
+                // 计算该题型正确率
+                const correctRate = partTotal > 0 
+                    ? ((partCorrect / partTotal) * 100).toFixed(1) + "%" 
+                    : "0%";
+
+                // 生成行HTML
+                html += `
+                    <tr>
+                        <td>${part.name}</td>
+                        <td>${part.questions.length}</td>
+                        <td>${partTotal}</td>
+                        <td class="success">${partCorrect}</td>
+                        <td class="error">${partWrong}</td>
+                        <td>
+                            ${correctRate}
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${correctRate}"></div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        }
+
+        // 渲染学生列表
+        function renderStudentTable() {
+            const tableBody = document.getElementById("studentTable");
+            
+            // 无数据时
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="no-data">暂无数据</td></tr>`;
+                return;
+            }
+
+            // 生成学生列表HTML
+            let html = "";
+            filteredData.forEach(student => {
+                // 计算正确率
+                const correctRate = student.total > 0 
+                    ? ((student.correct / student.total) * 100).toFixed(1) + "%" 
+                    : "0%";
+
+                html += `
+                    <tr>
+                        <td>${student.className || "--"}</td>
+                        <td>${student.studentName || "--"}</td>
+                        <td>${student.score || 0}</td>
+                        <td class="success">${student.correct || 0}</td>
+                        <td class="error">${student.wrong || 0}</td>
+                        <td>
+                            ${correctRate}
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${correctRate}"></div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        }
+
+        // 更新表格错误提示
+        function updateTableWithError(message) {
+            document.getElementById("questionTypeStats").innerHTML = `<tr><td colspan="6" class="error">${message}</td></tr>`;
+            document.getElementById("studentTable").innerHTML = `<tr><td colspan="6" class="error">${message}</td></tr>`;
+        }
+
+        // 页面卸载时清除定时器
+        window.onbeforeunload = function() {
+            if (refreshTimer) clearInterval(refreshTimer);
+        };
+    </script>
+</body>
+</html>
