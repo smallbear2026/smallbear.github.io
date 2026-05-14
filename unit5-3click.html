@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lesson 3 We draw pictures here 点读学习</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f5f7fa;
+            padding: 15px 10px;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 20px 15px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+        .sentence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sentence-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            border-left: 4px solid #3498db;
+            user-select: none;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+        .sentence-item.playing {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        .cn-text {
+            color: #666;
+            font-size: 15px;
+            margin-left: 8px;
+        }
+        .control-bar {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .control-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #3498db;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .control-btn:active {
+            background: #2980b9;
+        }
+        .tips {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lesson 3 We draw pictures here</h1>
+        
+        <div class="sentence-list">
+            <div class="sentence-item" data-start="9.3" data-end="13">
+                1. This is the art room. <span class="cn-text">这是美术教室。</span>
+            </div>
+            <div class="sentence-item" data-start="13" data-end="14.9">
+                2. We draw pictures here. <span class="cn-text">我们在这里画画。</span>
+            </div>
+            <div class="sentence-item" data-start="14.9" data-end="17">
+                3. How beautiful! <span class="cn-text">真漂亮啊！</span>
+            </div>
+            <div class="sentence-item" data-start="17.8" data-end="20.5">
+                4. Is this the music room? <span class="cn-text">这是音乐教室吗？</span>
+            </div>
+            <div class="sentence-item" data-start="20.5" data-end="23.3">
+                5. Yes. We sing here. <span class="cn-text">是的，我们在这里唱歌。</span>
+            </div>
+            <div class="sentence-item" data-start="23.4" data-end="27.3">
+                6. We often read in the library. <span class="cn-text">我们经常在图书馆看书。</span>
+            </div>
+            <div class="sentence-item" data-start="27.3" data-end="32.8">
+                7. Oh! You have so many books! I like this one. <span class="cn-text">哦！你们有这么多书！我喜欢这本。</span>
+            </div>
+            <div class="sentence-item" data-start="33" data-end="35.7">
+                8. This is our school garden. <span class="cn-text">这是我们学校的花园。</span>
+            </div>
+            <div class="sentence-item" data-start="35.7" data-end="38.1">
+                9. We grow vegetables here. <span class="cn-text">我们在这里种蔬菜。</span>
+            </div>
+            <div class="sentence-item" data-start="38.2" data-end="39.8">
+                10. Great! <span class="cn-text">太棒了！</span>
+            </div>
+        </div>
+
+        <div class="control-bar">
+            <button class="control-btn" id="stopBtn">停止播放</button>
+        </div>
+
+        <div class="tips">点击句子即可点读 | 音频路径：unit5-3/unit5-31.mp3</div>
+    </div>
+
+    <audio id="audioPlayer" src="unit5-3/unit5-31.mp3" preload="auto">
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const sentenceItems = document.querySelectorAll('.sentence-item');
+        const stopBtn = document.getElementById('stopBtn');
+        let pauseTimeout = null;
+
+        sentenceItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const start = parseFloat(item.dataset.start);
+                const end = parseFloat(item.dataset.end);
+
+                clearTimeout(pauseTimeout);
+                sentenceItems.forEach(i => i.classList.remove('playing'));
+                audio.pause();
+
+                audio.currentTime = start;
+                audio.play();
+                item.classList.add('playing');
+
+                pauseTimeout = setTimeout(() => {
+                    audio.pause();
+                    item.classList.remove('playing');
+                }, (end - start) * 1000);
+            });
+        });
+
+        stopBtn.addEventListener('click', () => {
+            clearTimeout(pauseTimeout);
+            audio.pause();
+            audio.currentTime = 0;
+            sentenceItems.forEach(i => i.classList.remove('playing'));
+        });
+
+        audio.addEventListener('ended', () => {
+            sentenceItems.forEach(i => i.classList.remove('playing'));
+        });
+    </script>
+</body>
+</html>
